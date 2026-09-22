@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Dodo Burgers</title>
 <style>
   :root{
@@ -188,6 +189,13 @@
     .swim,.tail,.bubble{ animation:none; }
   }
 
+  /* ---------- why us ---------- */
+  .usp-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:18px; }
+  @media (max-width:780px){ .usp-grid{ grid-template-columns:1fr; } }
+  .usp-card{ background:var(--lagoon-900); border:1px solid var(--line); border-radius:16px; padding:22px; }
+  .usp-card h3{ font-size:1rem; color:var(--bio-300); margin-bottom:8px; }
+  .usp-card p{ color:var(--ink-300); font-size:0.88rem; margin:0; }
+
   /* ---------- section shared ---------- */
   section{ padding-block:64px; }
   .section-head{ max-width:60ch; margin-bottom:36px; }
@@ -219,10 +227,15 @@
   /* ---------- menu ---------- */
   .menu-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
   .item-card{
-    background:var(--lagoon-900); border:1px solid var(--line); border-radius:18px; padding:22px;
-    display:flex; flex-direction:column; gap:10px; transition:border-color 0.15s, transform 0.15s;
+    background:var(--lagoon-900); border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    display:flex; flex-direction:column; transition:border-color 0.15s, transform 0.15s;
   }
   .item-card:hover{ border-color:rgba(87,232,201,0.4); transform:translateY(-3px); }
+  .burger-plate{
+    aspect-ratio:4/3; overflow:hidden; background:var(--lagoon-800);
+  }
+  .burger-plate img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .item-card-body{ padding:22px; display:flex; flex-direction:column; gap:10px; flex:1; }
   .item-card .tag{
     align-self:flex-start; font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase;
     color:var(--lagoon-950); background:var(--bio-400); padding:3px 9px; border-radius:999px; font-weight:700;
@@ -262,6 +275,8 @@
     display:flex; flex-direction:column; height:fit-content; position:sticky; top:100px;
   }
   .builder-summary h3{ font-size:1.05rem; margin-bottom:14px; }
+  .builder-preview{ margin-bottom:14px; border-radius:12px; overflow:hidden; aspect-ratio:4/3; }
+  .builder-preview img{ width:100%; height:100%; object-fit:cover; display:block; }
   #buildLines{ list-style:none; margin:0 0 14px; padding:0; font-size:0.88rem; color:var(--ink-300); display:flex; flex-direction:column; gap:6px; min-height:24px; }
   .build-total{ display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); padding-top:14px; margin-top:auto; font-weight:700; }
   .build-total .n{ font-family:'Space Mono',monospace; color:var(--bio-300); font-size:1.2rem; }
@@ -374,16 +389,13 @@
     <div class="tank" id="tank" aria-hidden="true">
       <svg viewBox="0 0 400 400">
         <g class="swim">
-          <ellipse cx="205" cy="205" rx="95" ry="66" fill="#3f9c85"/>
-          <ellipse cx="180" cy="190" rx="78" ry="52" fill="#57e8c9"/>
+          <ellipse cx="200" cy="205" rx="92" ry="62" fill="#3f9c85"/>
+          <ellipse cx="178" cy="192" rx="70" ry="46" fill="#57e8c9"/>
           <g class="tail">
-            <path d="M292 205 C 330 190, 350 205, 352 205 C 350 205, 330 222, 292 210 Z" fill="#3f9c85"/>
+            <path d="M286 205 C 322 194, 344 205, 346 205 C 344 206, 322 218, 286 210 Z" fill="#3f9c85"/>
           </g>
-          <path d="M150 175 C 110 168, 78 180, 60 205 C 78 200, 96 198, 118 202 C 96 212, 82 224, 76 240 C 100 226, 122 218, 150 218 Z" fill="#e8ddb5"/>
-          <circle cx="90" cy="196" r="6.5" fill="#0a302c"/>
-          <circle cx="92" cy="194" r="2" fill="#fff"/>
-          <ellipse cx="200" cy="150" rx="34" ry="20" fill="#8ff3da"/>
-          <path d="M210 260 q -6 20 2 34 M 235 262 q -4 20 4 32" stroke="#3f9c85" stroke-width="8" stroke-linecap="round" fill="none"/>
+          <path d="M150 178 C 108 170, 76 184, 58 206 C 90 202, 122 206, 150 220 Z" fill="#e8ddb5"/>
+          <circle cx="94" cy="196" r="5.5" fill="#0a302c"/>
         </g>
       </svg>
       <div class="bubble" style="left:20%; width:10px;height:10px; animation-duration:5s; animation-delay:0s; --drift:14px;"></div>
@@ -394,28 +406,45 @@
     </div>
   </div>
 
+  <section id="why" style="padding-block:0 20px;">
+    <div class="wrap">
+      <span class="eyebrow">Why us, specifically</span>
+      <div class="usp-grid">
+        <div class="usp-card">
+          <h3>One bird. One chain.</h3>
+          <p>Dodo meat exists in exactly one place on Earth right now. It's on this menu, not anyone else's.</p>
+        </div>
+        <div class="usp-card">
+          <h3>A comeback, not a commodity</h3>
+          <p>Every other patty on every other menu is beef, chicken, or plant protein. Ours went extinct once and came back anyway.</p>
+        </div>
+        <div class="usp-card">
+          <h3>Farmed where it was found</h3>
+          <p>Raised in the same reclaimed-land shallows where the species resurfaced — never shipped in, never substituted.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="story">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Field log &middot; Entry 004</span>
         <h2>How a flightless bird learned to swim</h2>
-        <p>The short version of a very long survey report, for people who'd rather order a burger.</p>
+        <p>The short version, for people who'd rather order a burger than read a survey report.</p>
       </div>
       <div class="dossier">
         <div class="stamp">DECLASSIFIED</div>
         <div>
           <h3>What actually happened</h3>
-          <p>When Singapore's land reclamation reached the old Tuas mudflats, sonar crews picked up movement patterns nobody could place. Three research dives later, the team confirmed it: descendants of <em>Raphus cucullatus</em>, the dodo of Mauritius, had somehow survived — not on land, but in the brackish shallows that formed around the new coastline.</p>
+          <p>When Singapore's land reclamation reached the old Tuas mudflats, sonar crews picked up movement nobody could place. Descendants of <em>Raphus cucullatus</em> — the dodo of Mauritius — had survived by going somewhere nobody thought to check: underwater.</p>
           <div class="field"><b>Species:</b> Raphus cucullatus var. natans</div>
-          <div class="field"><b>Habitat:</b> Reclaimed-land estuary shelf, 2–9 m</div>
           <div class="field"><b>Status:</b> Thriving, licensed aquaculture population</div>
-          <div class="field"><b>Diet:</b> Mangrove crab, seagrass, dropped kopi packets</div>
         </div>
-        <div class="readout-grid">
-          <div class="readout"><div class="n">3.4 kg</div><div class="l">Avg. adult weight</div></div>
-          <div class="readout"><div class="n">11 min</div><div class="l">Breath-hold record</div></div>
-          <div class="readout"><div class="n">18°C</div><div class="l">Preferred water temp</div></div>
-          <div class="readout"><div class="n">0</div><div class="l">Predators (still none)</div></div>
+        <div class="readout-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="readout"><div class="n">3.4 kg</div><div class="l">Avg. weight</div></div>
+          <div class="readout"><div class="n">11 min</div><div class="l">Breath-hold</div></div>
+          <div class="readout"><div class="n">2019</div><div class="l">Rediscovered</div></div>
         </div>
       </div>
     </div>
@@ -459,6 +488,9 @@
           </div>
         </div>
         <div class="builder-summary">
+          <div class="builder-preview">
+            <img src="images/builder.jpg" alt="Stacked cheeseburgers on wooden blocks, ready to customize" loading="lazy">
+          </div>
           <h3>Your build</h3>
           <ul id="buildLines"></ul>
           <div class="build-total">
@@ -491,6 +523,9 @@
     <div>Kitchen open daily, 11:00–22:00<br>Sourced from licensed pens, not the wild population.</div>
     <div class="mono" style="align-self:flex-end;">EST. 2019 (the bird's, not the shop's)</div>
   </div>
+  <div class="wrap" style="margin-top:18px; font-size:0.72rem; color:var(--ink-300); opacity:0.6;">
+    Photos by Eduardo Krajan, Mounir Salah, Natan Machado Fotografia Gastronômica and Sylwester Ficek via Pexels.
+  </div>
 </footer>
 
 <div class="overlay" id="overlay"></div>
@@ -513,13 +548,17 @@
 
   var MENU = [
     {id:"classic", name:"Original Dodo Classic", tag:"Signature", veg:false, price:9.90,
-      desc:"Wild-line-caught... sorry, pen-raised dodo patty, reclaimed-land lettuce, lagoon sauce, sesame bun."},
+      desc:"Wild-line-caught... sorry, pen-raised dodo patty, reclaimed-land lettuce, lagoon sauce, sesame bun.",
+      img:"images/classic.jpg"},
     {id:"sunda", name:"Spicy Sunda Strait", tag:"Double", veg:false, price:11.50,
-      desc:"Double patty, sambal aioli, pickled mangrove slaw, charcoal bun."},
+      desc:"Double patty, sambal aioli, pickled mangrove slaw, charcoal bun.",
+      img:"images/sunda.jpg"},
     {id:"deluxe", name:"Reclaimed Deluxe", tag:"Chef's pick", veg:false, price:13.90,
-      desc:"Smoked dodo, aged cheddar, crispy dodo-skin chips, truffle lagoon mayo."},
+      desc:"Smoked dodo, aged cheddar, crispy dodo-skin chips, truffle lagoon mayo.",
+      img:"images/deluxe.jpg"},
     {id:"kelp", name:"Kelp & Crumb", tag:"Plant-based", veg:true, price:8.90,
-      desc:"100% plant patty for guests not yet ready to commit to cryptid cuisine."}
+      desc:"100% plant patty for guests not yet ready to commit to cryptid cuisine.",
+      img:"images/kelp.jpg"}
   ];
 
   var BUILDER = {
@@ -563,12 +602,14 @@
     var grid = document.getElementById("menuGrid");
     grid.innerHTML = MENU.map(function(item){
       return '<div class="item-card">' +
+        '<div class="burger-plate"><img src="' + item.img + '" alt="' + item.name + '" loading="lazy"></div>' +
+        '<div class="item-card-body">' +
         '<span class="tag' + (item.veg ? ' veg' : '') + '">' + item.tag + '</span>' +
         '<h3>' + item.name + '</h3>' +
         '<p>' + item.desc + '</p>' +
         '<div class="item-foot"><span class="price mono">' + money(item.price) + '</span>' +
         '<button class="add-btn" data-id="' + item.id + '">Add to order</button></div>' +
-        '</div>';
+        '</div></div>';
     }).join("");
     grid.querySelectorAll(".add-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
