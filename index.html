@@ -1,0 +1,712 @@
+<title>Dodo Burgers</title>
+<style>
+  :root{
+    --lagoon-950:#051f1d;
+    --lagoon-900:#0a302c;
+    --lagoon-800:#0f4038;
+    --lagoon-700:#155448;
+    --lagoon-600:#1d6d5c;
+    --bio-400:#57e8c9;
+    --bio-300:#8ff3da;
+    --coral-500:#ff6b4a;
+    --coral-400:#ff8968;
+    --sand-100:#f4ecd8;
+    --sand-050:#faf5e8;
+    --ink-050:#f4ecd8;
+    --ink-300:#bcd6cd;
+    --line:rgba(244,236,216,0.14);
+    --shadow: 0 20px 60px -20px rgba(2,20,18,0.7);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--lagoon-950);
+    color:var(--ink-050);
+    font-family:'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Fredoka','Manrope',sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    margin:0;
+  }
+
+  .mono{
+    font-family:'Space Mono', 'SF Mono', monospace;
+  }
+
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  img,svg{max-width:100%;}
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding-inline:20px;
+  }
+
+  /* ---------- background atmosphere ---------- */
+  .ocean-bg{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(87,232,201,0.16), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 90% 10%, rgba(255,107,74,0.10), transparent 55%),
+      linear-gradient(180deg, var(--lagoon-950) 0%, var(--lagoon-900) 40%, var(--lagoon-950) 100%);
+  }
+  .caustics{
+    position:fixed; inset:0; z-index:-1; opacity:0.35; pointer-events:none;
+    background-image:
+      repeating-radial-gradient(circle at 20% 30%, rgba(143,243,218,0.05) 0, transparent 9%),
+      repeating-radial-gradient(circle at 70% 65%, rgba(143,243,218,0.045) 0, transparent 11%);
+    animation:drift 22s ease-in-out infinite alternate;
+  }
+  @keyframes drift{
+    from{ transform:translate(0,0) scale(1); }
+    to{ transform:translate(-2%,1.5%) scale(1.03); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .caustics{animation:none;}
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+    backdrop-filter:blur(10px);
+    background:rgba(5,31,29,0.72);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-block:14px;
+    gap:16px;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-mark{ width:34px; height:34px; flex:none; }
+  .logo-text{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.15rem; letter-spacing:-0.01em; }
+  .logo-text small{ display:block; font-family:'Space Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; color:var(--bio-300); font-weight:400; text-transform:uppercase; }
+  nav.links{ display:flex; gap:22px; font-size:0.92rem; }
+  nav.links a{ text-decoration:none; color:var(--ink-300); transition:color 0.15s; }
+  nav.links a:hover{ color:var(--bio-300); }
+  .cart-btn{
+    position:relative;
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--lagoon-700); color:var(--sand-050);
+    border:1px solid var(--line); border-radius:999px;
+    padding:9px 16px; cursor:pointer; font-size:0.88rem; font-weight:600;
+    transition:background 0.15s, transform 0.15s;
+  }
+  .cart-btn:hover{ background:var(--lagoon-600); }
+  .cart-btn:active{ transform:scale(0.97); }
+  .cart-count{
+    background:var(--coral-500); color:var(--lagoon-950);
+    font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700;
+    min-width:20px; height:20px; border-radius:999px;
+    display:inline-flex; align-items:center; justify-content:center; padding-inline:4px;
+  }
+  @media (max-width:720px){ nav.links{ display:none; } }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding-block:64px 40px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
+  }
+  @media (max-width:860px){ .hero{ grid-template-columns:1fr; padding-block:40px 20px;} }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--bio-300); background:rgba(87,232,201,0.08); border:1px solid rgba(87,232,201,0.3);
+    padding:6px 12px; border-radius:999px; margin-bottom:18px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--bio-400); box-shadow:0 0 8px var(--bio-400); animation:pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  .hero h1{
+    font-size:clamp(2.3rem, 5.2vw, 4rem);
+    line-height:1.03;
+  }
+  .hero h1 em{ font-style:normal; color:var(--bio-400); }
+  .hero p.lede{
+    margin-top:18px; max-width:52ch; color:var(--ink-300); font-size:1.05rem;
+  }
+  .hero .ctas{ display:flex; gap:14px; margin-top:30px; flex-wrap:wrap; }
+  .btn{
+    border:none; border-radius:12px; padding:14px 24px; font-weight:700; font-size:0.95rem;
+    cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition:transform 0.15s, box-shadow 0.15s, background 0.15s;
+  }
+  .btn-primary{ background:var(--coral-500); color:#241009; box-shadow:0 10px 30px -10px rgba(255,107,74,0.6); }
+  .btn-primary:hover{ background:var(--coral-400); transform:translateY(-2px); }
+  .btn-ghost{ background:transparent; color:var(--sand-050); border:1px solid var(--line); }
+  .btn-ghost:hover{ border-color:var(--bio-400); color:var(--bio-300); }
+  .btn:active{ transform:scale(0.97); }
+
+  .hero-stats{ display:flex; gap:22px; margin-top:36px; flex-wrap:wrap; }
+  .stat{ font-family:'Space Mono',monospace; }
+  .stat .n{ font-size:1.3rem; color:var(--bio-300); font-weight:700; }
+  .stat .l{ font-size:0.68rem; color:var(--ink-300); text-transform:uppercase; letter-spacing:0.1em; }
+
+  /* dodo illustration */
+  .tank{
+    position:relative; aspect-ratio:1/1; border-radius:28px;
+    background:radial-gradient(ellipse at 50% 30%, rgba(87,232,201,0.14), transparent 65%), var(--lagoon-900);
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+  .tank svg{ width:100%; height:100%; display:block; }
+  .bubble{
+    position:absolute; bottom:-10%; border-radius:50%;
+    background:rgba(143,243,218,0.25); border:1px solid rgba(143,243,218,0.4);
+    animation:rise linear infinite;
+  }
+  @keyframes rise{
+    from{ transform:translateY(0) translateX(0); opacity:0.9; }
+    to{ transform:translateY(-120%) translateX(var(--drift,10px)); opacity:0; }
+  }
+  .swim{ animation:swim 6s ease-in-out infinite; transform-origin:center; }
+  @keyframes swim{
+    0%,100%{ transform:translate(0,0) rotate(-2deg); }
+    50%{ transform:translate(0,-14px) rotate(2deg); }
+  }
+  .tail{ animation:tailwag 1.6s ease-in-out infinite; transform-origin:90% 50%; }
+  @keyframes tailwag{
+    0%,100%{ transform:rotate(0deg); }
+    50%{ transform:rotate(-8deg); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .swim,.tail,.bubble{ animation:none; }
+  }
+
+  /* ---------- section shared ---------- */
+  section{ padding-block:64px; }
+  .section-head{ max-width:60ch; margin-bottom:36px; }
+  .section-head .eyebrow{ margin-bottom:12px; }
+  .section-head h2{ font-size:clamp(1.7rem,3.4vw,2.4rem); }
+  .section-head p{ color:var(--ink-300); margin-top:10px; }
+
+  /* ---------- field log ---------- */
+  .dossier{
+    background:var(--lagoon-900); border:1px solid var(--line); border-radius:20px;
+    padding:32px; display:grid; grid-template-columns:1fr 1fr; gap:32px; position:relative; overflow:hidden;
+  }
+  @media (max-width:780px){ .dossier{ grid-template-columns:1fr; } }
+  .stamp{
+    position:absolute; top:24px; right:28px; transform:rotate(8deg);
+    border:2px solid var(--coral-500); color:var(--coral-500);
+    font-family:'Space Mono',monospace; font-weight:700; font-size:0.72rem; letter-spacing:0.14em;
+    padding:5px 10px; border-radius:6px; opacity:0.85;
+  }
+  .dossier h3{ font-size:1.3rem; margin-bottom:14px; }
+  .dossier p{ color:var(--ink-300); margin:0 0 12px; }
+  .dossier .field{ font-family:'Space Mono',monospace; font-size:0.78rem; color:var(--bio-300); margin-bottom:6px; }
+  .field b{ color:var(--sand-050); font-weight:700; }
+  .readout-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; align-content:start; }
+  .readout{ background:var(--lagoon-800); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .readout .n{ font-family:'Space Mono',monospace; font-size:1.25rem; color:var(--bio-300); font-weight:700; }
+  .readout .l{ font-size:0.72rem; color:var(--ink-300); text-transform:uppercase; letter-spacing:0.08em; margin-top:2px; }
+
+  /* ---------- menu ---------- */
+  .menu-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
+  .item-card{
+    background:var(--lagoon-900); border:1px solid var(--line); border-radius:18px; padding:22px;
+    display:flex; flex-direction:column; gap:10px; transition:border-color 0.15s, transform 0.15s;
+  }
+  .item-card:hover{ border-color:rgba(87,232,201,0.4); transform:translateY(-3px); }
+  .item-card .tag{
+    align-self:flex-start; font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--lagoon-950); background:var(--bio-400); padding:3px 9px; border-radius:999px; font-weight:700;
+  }
+  .item-card .tag.veg{ background:var(--sand-100); }
+  .item-card h3{ font-size:1.15rem; margin-top:2px; }
+  .item-card p{ color:var(--ink-300); font-size:0.88rem; margin:0; flex:1; }
+  .item-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
+  .price{ font-family:'Space Mono',monospace; font-weight:700; color:var(--sand-050); }
+  .add-btn{
+    background:var(--lagoon-700); color:var(--sand-050); border:1px solid var(--line); border-radius:10px;
+    padding:8px 14px; font-size:0.82rem; font-weight:700; cursor:pointer; transition:background 0.15s;
+  }
+  .add-btn:hover{ background:var(--coral-500); color:#241009; border-color:var(--coral-500); }
+
+  /* ---------- builder ---------- */
+  .builder{
+    background:var(--lagoon-900); border:1px solid var(--line); border-radius:20px; padding:32px;
+    display:grid; grid-template-columns:1.3fr 0.9fr; gap:32px;
+  }
+  @media (max-width:860px){ .builder{ grid-template-columns:1fr; } }
+  .choice-group{ margin-bottom:22px; }
+  .choice-group > label.gl{ display:block; font-family:'Space Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--bio-300); margin-bottom:10px; }
+  .pill-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .pill{
+    border:1px solid var(--line); background:var(--lagoon-800); color:var(--ink-050);
+    border-radius:10px; padding:10px 14px; font-size:0.86rem; cursor:pointer; display:flex; align-items:center; gap:8px;
+    transition:border-color 0.15s, background 0.15s;
+  }
+  .pill:hover{ border-color:var(--bio-400); }
+  .pill input{ accent-color:var(--bio-400); }
+  .pill.selected{ border-color:var(--bio-400); background:rgba(87,232,201,0.12); }
+  .pill .delta{ font-family:'Space Mono',monospace; font-size:0.72rem; color:var(--ink-300); }
+
+  .builder-summary{
+    background:var(--lagoon-800); border:1px solid var(--line); border-radius:16px; padding:22px;
+    display:flex; flex-direction:column; height:fit-content; position:sticky; top:100px;
+  }
+  .builder-summary h3{ font-size:1.05rem; margin-bottom:14px; }
+  #buildLines{ list-style:none; margin:0 0 14px; padding:0; font-size:0.88rem; color:var(--ink-300); display:flex; flex-direction:column; gap:6px; min-height:24px; }
+  .build-total{ display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); padding-top:14px; margin-top:auto; font-weight:700; }
+  .build-total .n{ font-family:'Space Mono',monospace; color:var(--bio-300); font-size:1.2rem; }
+
+  /* ---------- faq ---------- */
+  .faq-item{ border-bottom:1px solid var(--line); }
+  .faq-q{
+    width:100%; text-align:left; background:none; border:none; color:var(--sand-050);
+    padding:18px 0; font-size:1rem; font-weight:700; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  .faq-q .plus{ font-family:'Space Mono',monospace; color:var(--bio-300); transition:transform 0.2s; flex:none; }
+  .faq-item[open] .plus{ transform:rotate(45deg); }
+  .faq-a{ color:var(--ink-300); padding-bottom:18px; margin:0; max-width:65ch; font-size:0.94rem; }
+  details.faq-item > summary{ list-style:none; }
+  details.faq-item > summary::-webkit-details-marker{ display:none; }
+
+  /* ---------- footer ---------- */
+  footer{ border-top:1px solid var(--line); padding-block:36px; margin-top:20px; }
+  .foot-grid{ display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; color:var(--ink-300); font-size:0.85rem; }
+  .foot-grid .logo-text{ color:var(--sand-050); }
+
+  /* ---------- cart drawer ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(3,15,14,0.55); backdrop-filter:blur(2px);
+    opacity:0; pointer-events:none; transition:opacity 0.2s; z-index:60;
+  }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(380px,92vw);
+    background:var(--lagoon-900); border-left:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateX(100%); transition:transform 0.25s ease; z-index:61;
+    display:flex; flex-direction:column;
+    padding-top:calc(20px + env(safe-area-inset-top,0px));
+    padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  }
+  .drawer.open{ transform:translateX(0); }
+  .drawer-head{ display:flex; justify-content:space-between; align-items:center; padding:0 22px 16px; border-bottom:1px solid var(--line); }
+  .drawer-head h3{ font-size:1.1rem; }
+  .close-x{ background:none; border:none; color:var(--ink-300); font-size:1.3rem; cursor:pointer; line-height:1; }
+  #cartItems{ list-style:none; margin:0; padding:16px 22px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; flex:1; }
+  .cart-line{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+  .cart-line .name{ font-weight:700; font-size:0.92rem; }
+  .cart-line .meta{ font-size:0.78rem; color:var(--ink-300); }
+  .cart-line .rm{ background:none; border:none; color:var(--coral-400); font-size:0.78rem; cursor:pointer; padding:0; margin-top:4px; }
+  .cart-empty{ color:var(--ink-300); font-size:0.9rem; text-align:center; padding-top:40px; }
+  .drawer-foot{ padding:18px 22px 0; border-top:1px solid var(--line); }
+  .drawer-total{ display:flex; justify-content:space-between; font-weight:700; margin-bottom:14px; }
+  .drawer-total .n{ font-family:'Space Mono',monospace; color:var(--bio-300); }
+  .submit-btn{ width:100%; }
+
+  .toast{
+    position:fixed; left:50%; bottom:24px; transform:translate(-50%,140%);
+    background:var(--bio-400); color:var(--lagoon-950); font-weight:700; font-size:0.9rem;
+    padding:12px 22px; border-radius:999px; box-shadow:var(--shadow);
+    transition:transform 0.3s ease; z-index:80; white-space:nowrap;
+  }
+  .toast.show{ transform:translate(-50%,0); }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Manrope:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<div class="ocean-bg"></div>
+<div class="caustics"></div>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo">
+      <svg class="logo-mark" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="23" fill="#0f4038" stroke="#57e8c9" stroke-width="1.5"/>
+        <ellipse cx="22" cy="27" rx="13" ry="9" fill="#8ff3da"/>
+        <path d="M33 24c4 0 7 1.5 7 3s-3 3-7 3z" fill="#ff6b4a"/>
+        <circle cx="15" cy="24" r="1.6" fill="#0a302c"/>
+        <path d="M12 33c2 3 6 4.5 10 4.5s8-1.5 10-4.5" stroke="#0a302c" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-text">Dodo Burgers<small>Tuas Reclaimed Waterfront</small></span>
+    </a>
+    <nav class="links">
+      <a href="#story">The Discovery</a>
+      <a href="#menu">Menu</a>
+      <a href="#builder">Build Your Own</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="cart-btn" id="openCart" aria-haspopup="true" aria-controls="cartDrawer">
+      Order <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>Live at depth &middot; Tuas Shelf, Singapore</span>
+      <h1>Extinct in 1681.<br>Back on the menu <em>now</em>.</h1>
+      <p class="lede">In 2019, marine biologists surveying Singapore's newest reclaimed land found something impossible: a thriving, fully aquatic population of dodos, quietly evolved for three centuries in the shallows nobody was watching. We build burgers around them.</p>
+      <div class="ctas">
+        <a href="#menu" class="btn btn-primary">See the menu</a>
+        <a href="#story" class="btn btn-ghost">Read the field log</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="n">40,000+</div><div class="l">Confirmed population</div></div>
+        <div class="stat"><div class="n">‑6.2 m</div><div class="l">Average dive depth</div></div>
+        <div class="stat"><div class="n">2019</div><div class="l">Year of rediscovery</div></div>
+      </div>
+    </div>
+
+    <div class="tank" id="tank" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <g class="swim">
+          <ellipse cx="205" cy="205" rx="95" ry="66" fill="#3f9c85"/>
+          <ellipse cx="180" cy="190" rx="78" ry="52" fill="#57e8c9"/>
+          <g class="tail">
+            <path d="M292 205 C 330 190, 350 205, 352 205 C 350 205, 330 222, 292 210 Z" fill="#3f9c85"/>
+          </g>
+          <path d="M150 175 C 110 168, 78 180, 60 205 C 78 200, 96 198, 118 202 C 96 212, 82 224, 76 240 C 100 226, 122 218, 150 218 Z" fill="#e8ddb5"/>
+          <circle cx="90" cy="196" r="6.5" fill="#0a302c"/>
+          <circle cx="92" cy="194" r="2" fill="#fff"/>
+          <ellipse cx="200" cy="150" rx="34" ry="20" fill="#8ff3da"/>
+          <path d="M210 260 q -6 20 2 34 M 235 262 q -4 20 4 32" stroke="#3f9c85" stroke-width="8" stroke-linecap="round" fill="none"/>
+        </g>
+      </svg>
+      <div class="bubble" style="left:20%; width:10px;height:10px; animation-duration:5s; animation-delay:0s; --drift:14px;"></div>
+      <div class="bubble" style="left:55%; width:7px;height:7px; animation-duration:4s; animation-delay:1.2s; --drift:-10px;"></div>
+      <div class="bubble" style="left:72%; width:13px;height:13px; animation-duration:6.5s; animation-delay:0.6s; --drift:18px;"></div>
+      <div class="bubble" style="left:35%; width:6px;height:6px; animation-duration:3.6s; animation-delay:2s; --drift:-6px;"></div>
+      <div class="bubble" style="left:85%; width:9px;height:9px; animation-duration:5.4s; animation-delay:0.9s; --drift:8px;"></div>
+    </div>
+  </div>
+
+  <section id="story">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Field log &middot; Entry 004</span>
+        <h2>How a flightless bird learned to swim</h2>
+        <p>The short version of a very long survey report, for people who'd rather order a burger.</p>
+      </div>
+      <div class="dossier">
+        <div class="stamp">DECLASSIFIED</div>
+        <div>
+          <h3>What actually happened</h3>
+          <p>When Singapore's land reclamation reached the old Tuas mudflats, sonar crews picked up movement patterns nobody could place. Three research dives later, the team confirmed it: descendants of <em>Raphus cucullatus</em>, the dodo of Mauritius, had somehow survived — not on land, but in the brackish shallows that formed around the new coastline.</p>
+          <div class="field"><b>Species:</b> Raphus cucullatus var. natans</div>
+          <div class="field"><b>Habitat:</b> Reclaimed-land estuary shelf, 2–9 m</div>
+          <div class="field"><b>Status:</b> Thriving, licensed aquaculture population</div>
+          <div class="field"><b>Diet:</b> Mangrove crab, seagrass, dropped kopi packets</div>
+        </div>
+        <div class="readout-grid">
+          <div class="readout"><div class="n">3.4 kg</div><div class="l">Avg. adult weight</div></div>
+          <div class="readout"><div class="n">11 min</div><div class="l">Breath-hold record</div></div>
+          <div class="readout"><div class="n">18°C</div><div class="l">Preferred water temp</div></div>
+          <div class="readout"><div class="n">0</div><div class="l">Predators (still none)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The menu</span>
+        <h2>Four ways to eat a comeback story</h2>
+        <p>Every patty comes from our licensed pens on the Tuas shelf — never wild stock.</p>
+      </div>
+      <div class="menu-grid" id="menuGrid"></div>
+    </div>
+  </section>
+
+  <section id="builder">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Build your own</span>
+        <h2>Assemble your own Dodo</h2>
+        <p>Pick a patty, a bun, a sauce, and however many toppings your conscience allows.</p>
+      </div>
+      <div class="builder">
+        <div>
+          <div class="choice-group">
+            <label class="gl">Patty</label>
+            <div class="pill-row" id="pattyRow"></div>
+          </div>
+          <div class="choice-group">
+            <label class="gl">Bun</label>
+            <div class="pill-row" id="bunRow"></div>
+          </div>
+          <div class="choice-group">
+            <label class="gl">Sauce</label>
+            <div class="pill-row" id="sauceRow"></div>
+          </div>
+          <div class="choice-group">
+            <label class="gl">Toppings</label>
+            <div class="pill-row" id="toppingRow"></div>
+          </div>
+        </div>
+        <div class="builder-summary">
+          <h3>Your build</h3>
+          <ul id="buildLines"></ul>
+          <div class="build-total">
+            <span>Total</span>
+            <span class="n" id="buildTotal">$0.00</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:16px;width:100%;" id="addBuild">Add to order</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap" style="max-width:800px;">
+      <div class="section-head">
+        <span class="eyebrow">Questions people actually ask</span>
+        <h2>Before you order</h2>
+      </div>
+      <div id="faqList"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <span class="logo-text">Dodo Burgers</span>
+      <div style="margin-top:6px;">Tuas South Reclaimed Waterfront, Singapore</div>
+    </div>
+    <div>Kitchen open daily, 11:00–22:00<br>Sourced from licensed pens, not the wild population.</div>
+    <div class="mono" style="align-self:flex-end;">EST. 2019 (the bird's, not the shop's)</div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="cartDrawer" aria-label="Your order">
+  <div class="drawer-head">
+    <h3>Your order</h3>
+    <button class="close-x" id="closeCart" aria-label="Close cart">&times;</button>
+  </div>
+  <ul id="cartItems"></ul>
+  <div class="drawer-foot">
+    <div class="drawer-total"><span>Total</span><span class="n" id="cartTotal">$0.00</span></div>
+    <button class="btn btn-primary submit-btn" id="submitOrder">Send to kitchen</button>
+  </div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var MENU = [
+    {id:"classic", name:"Original Dodo Classic", tag:"Signature", veg:false, price:9.90,
+      desc:"Wild-line-caught... sorry, pen-raised dodo patty, reclaimed-land lettuce, lagoon sauce, sesame bun."},
+    {id:"sunda", name:"Spicy Sunda Strait", tag:"Double", veg:false, price:11.50,
+      desc:"Double patty, sambal aioli, pickled mangrove slaw, charcoal bun."},
+    {id:"deluxe", name:"Reclaimed Deluxe", tag:"Chef's pick", veg:false, price:13.90,
+      desc:"Smoked dodo, aged cheddar, crispy dodo-skin chips, truffle lagoon mayo."},
+    {id:"kelp", name:"Kelp & Crumb", tag:"Plant-based", veg:true, price:8.90,
+      desc:"100% plant patty for guests not yet ready to commit to cryptid cuisine."}
+  ];
+
+  var BUILDER = {
+    patty: [
+      {id:"classic-p", label:"Classic Dodo", price:6.50},
+      {id:"double-p", label:"Double Dodo", price:10.00},
+      {id:"kelp-p", label:"Kelp & Crumb (veg)", price:5.50}
+    ],
+    bun: [
+      {id:"sesame-b", label:"Sesame bun", price:0},
+      {id:"charcoal-b", label:"Charcoal bun", price:0.80},
+      {id:"lettuce-b", label:"Lettuce wrap", price:0}
+    ],
+    sauce: [
+      {id:"lagoon-s", label:"Lagoon sauce", price:0},
+      {id:"sambal-s", label:"Sambal aioli", price:0.50},
+      {id:"truffle-s", label:"Truffle lagoon mayo", price:1.20}
+    ],
+    topping: [
+      {id:"cheddar-t", label:"Aged cheddar", price:1.00},
+      {id:"slaw-t", label:"Pickled mangrove slaw", price:0.80},
+      {id:"chips-t", label:"Crispy dodo-skin chips", price:1.50},
+      {id:"egg-t", label:"Fried egg", price:1.20}
+    ]
+  };
+
+  var FAQ = [
+    {q:"Wait — didn't dodos go extinct in the 1600s?", a:"The flightless, land-dwelling kind did, around 1681 on Mauritius. What turned up off Singapore's Tuas reclaimed shelf in 2019 is a fully aquatic descendant population that had been evolving quietly in the shallows for roughly three centuries. Same lineage, very different commute."},
+    {q:"Is it actually legal and sustainable to serve?", a:"Yes. The wild population is thriving and protected — every patty on this menu comes from our licensed aquaculture pens, monitored under NParks and SFA guidelines, never from wild-caught stock."},
+    {q:"What does dodo taste like?", a:"Somewhere between duck confit and blue crab, with a faint brininess from a lifetime in reclaimed-land estuary water. Grills up closer to a rich poultry than a fish."},
+    {q:"I'm not ready to eat a cryptid. Got anything else?", a:"The Kelp & Crumb patty is 100% plant-based and built on the same bun and sauce lineup, no dodo required."},
+    {q:"Where do I actually find the shop?", a:"Tuas South Reclaimed Waterfront — look for the sonar sign that glows aqua after dark. Kitchen's open daily, 11:00 to 22:00."}
+  ];
+
+  var cart = [];
+  var build = { patty: BUILDER.patty[0], bun: BUILDER.bun[0], sauce: BUILDER.sauce[0], toppings: [] };
+
+  function money(n){ return "$" + n.toFixed(2); }
+
+  function renderMenu(){
+    var grid = document.getElementById("menuGrid");
+    grid.innerHTML = MENU.map(function(item){
+      return '<div class="item-card">' +
+        '<span class="tag' + (item.veg ? ' veg' : '') + '">' + item.tag + '</span>' +
+        '<h3>' + item.name + '</h3>' +
+        '<p>' + item.desc + '</p>' +
+        '<div class="item-foot"><span class="price mono">' + money(item.price) + '</span>' +
+        '<button class="add-btn" data-id="' + item.id + '">Add to order</button></div>' +
+        '</div>';
+    }).join("");
+    grid.querySelectorAll(".add-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var item = MENU.filter(function(m){ return m.id === btn.getAttribute("data-id"); })[0];
+        addToCart({ name: item.name, price: item.price, meta: "" });
+        toast(item.name + " added to order");
+      });
+    });
+  }
+
+  function renderPillRow(rowId, options, groupKey, multi){
+    var row = document.getElementById(rowId);
+    row.innerHTML = options.map(function(opt){
+      var checked = multi
+        ? build.toppings.indexOf(opt.id) !== -1
+        : build[groupKey].id === opt.id;
+      return '<label class="pill' + (checked ? ' selected' : '') + '" data-group="' + groupKey + '" data-id="' + opt.id + '">' +
+        '<input type="' + (multi ? "checkbox" : "radio") + '" name="' + groupKey + '" ' + (checked ? "checked" : "") + ' style="pointer-events:none;">' +
+        opt.label + (opt.price > 0 ? '<span class="delta">+' + money(opt.price) + '</span>' : '') +
+        '</label>';
+    }).join("");
+    row.querySelectorAll(".pill").forEach(function(pill){
+      pill.addEventListener("click", function(){
+        var id = pill.getAttribute("data-id");
+        var opt = BUILDER[groupKey].filter(function(o){ return o.id === id; })[0];
+        if(multi){
+          var idx = build.toppings.indexOf(id);
+          if(idx === -1) build.toppings.push(id); else build.toppings.splice(idx,1);
+        } else {
+          build[groupKey] = opt;
+        }
+        renderBuilder();
+      });
+    });
+  }
+
+  function renderBuilder(){
+    renderPillRow("pattyRow", BUILDER.patty, "patty", false);
+    renderPillRow("bunRow", BUILDER.bun, "bun", false);
+    renderPillRow("sauceRow", BUILDER.sauce, "sauce", false);
+    renderPillRow("toppingRow", BUILDER.topping, "topping", true);
+
+    var lines = [build.patty.label, build.bun.label, build.sauce.label];
+    var total = build.patty.price + build.bun.price + build.sauce.price;
+    build.toppings.forEach(function(tid){
+      var t = BUILDER.topping.filter(function(o){ return o.id === tid; })[0];
+      lines.push(t.label);
+      total += t.price;
+    });
+    document.getElementById("buildLines").innerHTML = lines.map(function(l){ return "<li>" + l + "</li>"; }).join("");
+    document.getElementById("buildTotal").textContent = money(total);
+    build.total = total;
+  }
+
+  function renderFaq(){
+    var list = document.getElementById("faqList");
+    list.innerHTML = FAQ.map(function(f, i){
+      return '<details class="faq-item"' + (i===0 ? " open" : "") + '>' +
+        '<summary class="faq-q">' + f.q + '<span class="plus">+</span></summary>' +
+        '<p class="faq-a">' + f.a + '</p>' +
+        '</details>';
+    }).join("");
+  }
+
+  function addToCart(entry){
+    cart.push(entry);
+    renderCart();
+  }
+
+  function renderCart(){
+    var itemsEl = document.getElementById("cartItems");
+    var countEl = document.getElementById("cartCount");
+    var totalEls = [document.getElementById("cartTotal")];
+    countEl.textContent = cart.length;
+
+    if(cart.length === 0){
+      itemsEl.innerHTML = '<div class="cart-empty">Nothing in here yet.<br>The dodos are waiting.</div>';
+    } else {
+      itemsEl.innerHTML = cart.map(function(entry, i){
+        return '<li class="cart-line">' +
+          '<div><div class="name">' + entry.name + '</div>' + (entry.meta ? '<div class="meta">' + entry.meta + '</div>' : '') +
+          '<button class="rm" data-i="' + i + '">Remove</button></div>' +
+          '<span class="price mono">' + money(entry.price) + '</span>' +
+          '</li>';
+      }).join("");
+      itemsEl.querySelectorAll(".rm").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          cart.splice(Number(btn.getAttribute("data-i")), 1);
+          renderCart();
+        });
+      });
+    }
+    var total = cart.reduce(function(sum, e){ return sum + e.price; }, 0);
+    totalEls.forEach(function(el){ el.textContent = money(total); });
+  }
+
+  var toastTimer;
+  function toast(msg){
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove("show"); }, 2200);
+  }
+
+  function openDrawer(){
+    document.getElementById("cartDrawer").classList.add("open");
+    document.getElementById("overlay").classList.add("open");
+  }
+  function closeDrawer(){
+    document.getElementById("cartDrawer").classList.remove("open");
+    document.getElementById("overlay").classList.remove("open");
+  }
+
+  document.getElementById("openCart").addEventListener("click", openDrawer);
+  document.getElementById("closeCart").addEventListener("click", closeDrawer);
+  document.getElementById("overlay").addEventListener("click", closeDrawer);
+
+  document.getElementById("addBuild").addEventListener("click", function(){
+    var meta = [build.patty.label, build.bun.label, build.sauce.label].concat(
+      build.toppings.map(function(tid){ return BUILDER.topping.filter(function(o){ return o.id===tid; })[0].label; })
+    ).join(", ");
+    addToCart({ name: "Build-Your-Own Dodo", price: build.total, meta: meta });
+    toast("Your build was added to the order");
+    openDrawer();
+  });
+
+  document.getElementById("submitOrder").addEventListener("click", function(){
+    if(cart.length === 0){ toast("Add something first"); return; }
+    toast("Order sent to the kitchen — thank you!");
+    cart = [];
+    renderCart();
+    setTimeout(closeDrawer, 900);
+  });
+
+  renderMenu();
+  renderBuilder();
+  renderFaq();
+  renderCart();
+})();
+</script>
