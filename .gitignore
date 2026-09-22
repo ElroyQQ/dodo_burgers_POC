@@ -1,0 +1,5 @@
+# nuzzle-pet-care/ is its own independent git repository (github.com/ElroyQQ/nuzzle_pet_care_POC)
+# living inside this directory tree — never track it from here, only from within itself.
+nuzzle-pet-care/
+
+.DS_Store
