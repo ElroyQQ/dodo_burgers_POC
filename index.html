@@ -242,8 +242,19 @@
     display:flex; flex-direction:column; height:fit-content; position:sticky; top:100px;
   }
   .builder-summary h3{ font-size:1.05rem; margin-bottom:14px; color:var(--ink-900); }
-  .builder-preview{ margin-bottom:14px; border-radius:12px; overflow:hidden; aspect-ratio:4/3; }
-  .builder-preview img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .builder-preview{
+    margin-bottom:14px; border-radius:12px; overflow:hidden; aspect-ratio:4/3;
+    background:radial-gradient(ellipse at 50% 70%, rgba(14,107,88,0.10), transparent 70%), var(--card);
+    border:1px solid var(--line);
+  }
+  .builder-preview svg{ width:100%; height:100%; display:block; animation:previewFloat 3.4s ease-in-out infinite; }
+  @keyframes previewFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-3px); } }
+  .build-layer{ animation:layerDrop 0.5s cubic-bezier(.22,.85,.3,1.2) both; transform-origin:100px 90px; }
+  @keyframes layerDrop{ from{ opacity:0; transform:translateY(-12px) scale(0.94); } to{ opacity:1; transform:translateY(0) scale(1); } }
+  @media (prefers-reduced-motion:reduce){
+    .builder-preview svg{ animation:none; }
+    .build-layer{ animation:none; }
+  }
   #buildLines{ list-style:none; margin:0 0 14px; padding:0; font-size:0.88rem; color:var(--ink-600); display:flex; flex-direction:column; gap:6px; min-height:24px; }
   .build-total{ display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); padding-top:14px; margin-top:auto; font-weight:700; color:var(--ink-900); }
   .build-total .n{ font-family:'Space Mono',monospace; color:var(--teal-700); font-size:1.2rem; }
@@ -333,7 +344,7 @@
   <div class="wrap hero">
     <div>
       <span class="eyebrow"><span class="dot"></span>Sighted off Tuas &middot; Singapore</span>
-      <h1>Extinct in 1681.<br>Back on the menu, <em>lah</em>.</h1>
+      <h1>Extinct in 1681.<br>Back on the menu <em>now</em>.</h1>
       <p class="lede">In 2019, marine biologists surveying Singapore's newest reclaimed land found something nobody expected: a thriving, fully aquatic population of dodos, quietly evolved in the Tuas shallows for three centuries. NParks confirmed it. We turned it into burgers.</p>
       <div class="ctas">
         <a href="#menu" class="btn btn-primary">See the menu</a>
@@ -433,9 +444,7 @@
           </div>
         </div>
         <div class="builder-summary">
-          <div class="builder-preview">
-            <img src="images/builder.jpg" alt="Stacked cheeseburgers on wooden blocks, ready to customize" loading="lazy">
-          </div>
+          <div class="builder-preview" id="builderPreview" aria-hidden="true"></div>
           <h3>Your build</h3>
           <ul id="buildLines"></ul>
           <div class="build-total">
@@ -544,6 +553,104 @@
 
   function money(n){ return "$" + n.toFixed(2); }
 
+  /* ---- animated "your build" illustration, redrawn from current selections ---- */
+  var buildLayerDelay = 0;
+  function buildLayer(svgPart){
+    var g = '<g class="build-layer" style="animation-delay:' + buildLayerDelay.toFixed(2) + 's">' + svgPart + '</g>';
+    buildLayerDelay += 0.07;
+    return g;
+  }
+  function wavyStrip(x0, x1, y, amp, fill, h){
+    var segs = 6, w = (x1 - x0) / segs, d = "M" + x0 + " " + y;
+    for(var i = 0; i < segs; i++){
+      var cx = x0 + w * i + w / 2, cy = y + (i % 2 === 0 ? -amp : amp), ex = x0 + w * (i + 1);
+      d += " Q" + cx + " " + cy + " " + ex + " " + y;
+    }
+    d += " L" + x1 + " " + (y + h) + " Q" + ((x0 + x1) / 2) + " " + (y + h + amp) + " " + x0 + " " + (y + h) + " Z";
+    return '<path d="' + d + '" fill="' + fill + '"/>';
+  }
+  function drizzle(x0, x1, y, amp, color){
+    var segs = 8, w = (x1 - x0) / segs, d = "M" + x0 + " " + y;
+    for(var i = 0; i < segs; i++){
+      var cx = x0 + w * i + w / 2, cy = y + (i % 2 === 0 ? -amp : amp), ex = x0 + w * (i + 1);
+      d += " Q" + cx + " " + cy + " " + ex + " " + y;
+    }
+    return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="4" stroke-linecap="round"/>';
+  }
+  function cheeseDrips(x0, x1, y, fill, count){
+    var w = (x1 - x0) / count;
+    var s = '<rect x="' + x0 + '" y="' + (y - 6) + '" width="' + (x1 - x0) + '" height="8" rx="2" fill="' + fill + '"/>';
+    for(var i = 0; i < count; i++){
+      var cx = x0 + w * i + w / 2, drip = (i % 2 === 0) ? 14 : 9;
+      s += '<path d="M' + (cx - w / 2 + 2) + " " + y + " L" + (cx + w / 2 - 2) + " " + y + " L" + cx + " " + (y + drip) + ' Z" fill="' + fill + '"/>';
+    }
+    return s;
+  }
+  function bunDome(fill, seedColor){
+    var s = '<path d="M30 92 Q30 40 100 34 Q170 40 170 92 Q100 78 30 92 Z" fill="' + fill + '"/>';
+    if(seedColor){
+      [[70,55],[92,48],[112,50],[130,58],[80,68],[118,70],[100,44]].forEach(function(p){
+        s += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="2.6" ry="1.6" fill="' + seedColor + '" opacity="0.85" transform="rotate(-15 ' + p[0] + " " + p[1] + ')"/>';
+      });
+    }
+    return s;
+  }
+  function renderBuilderPreview(){
+    var bunId = build.bun.id, pattyId = build.patty.id, sauceId = build.sauce.id;
+    var bunTop = { "sesame-b": "#eeb85c", "charcoal-b": "#2c2621", "lettuce-b": "#8bc34a" }[bunId];
+    var bunBottom = { "sesame-b": "#d99a3d", "charcoal-b": "#17130f", "lettuce-b": "#6a9c34" }[bunId];
+    var pattyColor = pattyId === "kelp-p" ? "#7a9b3e" : "#5a3419";
+    var sauceColor = { "lagoon-s": "#3fbfa8", "sambal-s": "#e2483a", "truffle-s": "#e8b23f" }[sauceId];
+
+    buildLayerDelay = 0;
+    var parts = [];
+    parts.push(buildLayer('<ellipse cx="100" cy="128" rx="66" ry="9" fill="rgba(21,33,29,0.15)"/>'));
+
+    if(bunId === "lettuce-b"){
+      parts.push(buildLayer(wavyStrip(28, 172, 112, 6, bunTop, 14)));
+    } else {
+      parts.push(buildLayer('<path d="M30 116 Q100 132 170 116 L168 104 Q100 116 32 104 Z" fill="' + bunBottom + '"/>'));
+    }
+
+    var topY;
+    if(pattyId === "double-p"){
+      parts.push(buildLayer('<rect x="40" y="94" width="120" height="15" rx="7" fill="' + pattyColor + '"/>'));
+      parts.push(buildLayer('<rect x="44" y="80" width="112" height="15" rx="7" fill="' + pattyColor + '"/>'));
+      topY = 80;
+    } else {
+      parts.push(buildLayer('<rect x="42" y="88" width="116" height="17" rx="8" fill="' + pattyColor + '"/>'));
+      topY = 88;
+    }
+
+    if(build.toppings.indexOf("slaw-t") !== -1){
+      parts.push(buildLayer(wavyStrip(36, 164, topY - 2, 4, "#a8d16a", 10)));
+    }
+    if(build.toppings.indexOf("cheddar-t") !== -1){
+      parts.push(buildLayer(cheeseDrips(38, 162, topY - 4, "#f5a623", 6)));
+    }
+    if(build.toppings.indexOf("chips-t") !== -1){
+      var chipsSvg = "";
+      [[60, topY - 10], [100, topY - 14], [138, topY - 9]].forEach(function(p, i){
+        chipsSvg += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="9" ry="5" fill="#f0a83c" opacity="0.9" transform="rotate(' + (i * 17 - 15) + " " + p[0] + " " + p[1] + ')"/>';
+      });
+      parts.push(buildLayer(chipsSvg));
+    }
+    if(build.toppings.indexOf("egg-t") !== -1){
+      parts.push(buildLayer('<ellipse cx="100" cy="' + (topY - 8) + '" rx="16" ry="9" fill="#fff3d6"/><ellipse cx="100" cy="' + (topY - 8) + '" rx="6" ry="4" fill="#ffb648"/>'));
+    }
+
+    parts.push(buildLayer(drizzle(46, 154, topY - 16, 5, sauceColor)));
+
+    if(bunId === "lettuce-b"){
+      parts.push(buildLayer(wavyStrip(30, 170, topY - 26, 7, bunTop, 16)));
+    } else {
+      parts.push(buildLayer(bunDome(bunTop, bunId === "charcoal-b" ? null : "#fff3d6")));
+    }
+
+    document.getElementById("builderPreview").innerHTML =
+      '<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">' + parts.join("") + '</svg>';
+  }
+
   function renderMenu(){
     var grid = document.getElementById("menuGrid");
     grid.innerHTML = MENU.map(function(item){
@@ -609,6 +716,7 @@
     document.getElementById("buildLines").innerHTML = lines.map(function(l){ return "<li>" + l + "</li>"; }).join("");
     document.getElementById("buildTotal").textContent = money(total);
     build.total = total;
+    renderBuilderPreview();
   }
 
   function renderFaq(){

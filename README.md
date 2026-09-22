@@ -33,7 +33,7 @@ There is no npm install, no bundler, and no test suite — see [CLAUDE.md](CLAUD
 
 - **Theme**: light/cream (`--paper` background, white `--card` surfaces), not dark mode. Teal (`--teal-700`) is the brand accent for links/labels; coral (`--coral-500`) is the call-to-action color.
 - **Type**: Fredoka (headings), Manrope (body), Space Mono (labels/prices/data), all loaded from Google Fonts.
-- **Imagery policy**: every image on the site is a real photograph, licensed for free/commercial use, edited as needed (cropped, color-graded, composited) — no illustrations or AI-generated imagery. See [Image credits](#image-credits) below.
+- **Imagery policy**: every image on the site is a real photograph, licensed for free/commercial use, edited as needed (cropped, color-graded, composited) — no illustrations or AI-generated imagery, with one deliberate exception: see [Your build preview](#your-build-preview) below. See [Image credits](#image-credits) for everything else.
 
 ## Image credits
 
@@ -45,7 +45,6 @@ All photos are either [Pexels License](https://www.pexels.com/license/) (free fo
 | `images/sunda.jpg` | Double cheeseburger | Mounir Salah, Pexels | Pexels License |
 | `images/deluxe.jpg` | Loaded bacon burger | Natan Machado Fotografia Gastronômica, Pexels | Pexels License |
 | `images/kelp.jpg` | Veggie burger | Sylwester Ficek, Pexels | Pexels License |
-| `images/builder.jpg` | Burgers on wood blocks | Mounir Salah, Pexels | Pexels License |
 | `images/bun-sesame.jpg`, `bun-charcoal.jpg`, `bun-lettuce.jpg` | Bun options | Pexels contributors | Pexels License |
 | `images/patty-classic.jpg`, `patty-double.jpg`, `patty-veg.jpg` | Patty options | Pexels contributors | Pexels License |
 | `images/sauce-lagoon.jpg`, `sauce-sambal.jpg`, `sauce-egg.jpg` | Sauce options | Pexels contributors | Pexels License |
@@ -58,6 +57,10 @@ All photos are either [Pexels License](https://www.pexels.com/license/) (free fo
 2. **Dodo subject** — *"Dronte dodo Raphus cucullatus.jpg"*, a photograph of a real plaster-and-wax dodo reconstruction model held by the Muséum national d'Histoire naturelle, Paris, by Jebulon, via Wikimedia Commons (**CC0 / public domain**). This is a photo of a physical museum model, not an illustration — since no photos of a live dodo exist, this is the most accurate real-photo option.
 
 The compositing (cutting the dodo out of its studio background, scaling it, color-grading it to match the scene's dusk backlighting, adding a waterline fade, reflection, and contact shadow) was done in this session with Pillow/numpy — see the "Session history" section of [CLAUDE.md](CLAUDE.md) for how that pipeline works and what was tried before landing on the current version.
+
+### "Your build" preview
+
+The one deliberate exception to the photo-only policy: the small burger graphic in the "Build Your Own" summary panel is a **generated SVG illustration**, not a photo. It's built in JavaScript (`renderBuilderPreview()` in `index.html`) from the current selections — bun, patty, sauce, and toppings each map to a drawn layer — and redraws itself on every change, with each layer animating in with a short staggered drop-in. A static or per-combination photo isn't possible here (there's no photo for every one of the dozens of possible ingredient combinations), so this one spot uses illustration on purpose, per an explicit request.
 
 ## Scope and limitations
 
