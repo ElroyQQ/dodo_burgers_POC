@@ -60,7 +60,9 @@ The compositing (cutting the dodo out of its studio background, scaling it, colo
 
 ### "Your build" preview
 
-The one deliberate exception to the photo-only policy: the small burger graphic in the "Build Your Own" summary panel is a **generated SVG illustration**, not a photo. It's built in JavaScript (`renderBuilderPreview()` in `index.html`) from the current selections — bun, patty, sauce, and toppings each map to a drawn layer — and redraws itself on every change, with each layer animating in with a short staggered drop-in. A static or per-combination photo isn't possible here (there's no photo for every one of the dozens of possible ingredient combinations), so this one spot uses illustration on purpose, per an explicit request.
+The one deliberate exception to the photo-only policy: the small burger graphic in the "Build Your Own" summary panel is a **generated SVG illustration**, not a photo. It's built in JavaScript (`renderBuilderPreview()` in `index.html`) from the current selections — bun, patty, sauce, and toppings each map to a drawn layer. A static or per-combination photo isn't possible here (there's no photo for every one of the dozens of possible ingredient combinations), so this one spot uses illustration on purpose, per an explicit request.
+
+It redraws on every change, but only the layer(s) that actually changed animate — the function diffs the new selection against the previous one, and just that layer pops in with a quick scale bounce plus a soft glow flash in the color of the option just picked (e.g. picking a red sauce flashes red). Everything unchanged stays static. An earlier version animated every layer on every change with a cumulative per-layer delay, which meant the top bun (last in the stack) could take over a second to appear after any click — it read as broken rather than snappy, hence the diff-based rewrite.
 
 ## Scope and limitations
 

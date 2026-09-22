@@ -249,11 +249,21 @@
   }
   .builder-preview svg{ width:100%; height:100%; display:block; animation:previewFloat 3.4s ease-in-out infinite; }
   @keyframes previewFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-3px); } }
-  .build-layer{ animation:layerDrop 0.5s cubic-bezier(.22,.85,.3,1.2) both; transform-origin:100px 90px; }
-  @keyframes layerDrop{ from{ opacity:0; transform:translateY(-12px) scale(0.94); } to{ opacity:1; transform:translateY(0) scale(1); } }
+  .build-layer{ transform-origin:100px 90px; }
+  .build-layer.is-new{ animation:layerPop 0.55s cubic-bezier(.22,.85,.3,1.3) both; }
+  .build-layer.is-new .glow-shape{ animation:glowPulse 0.55s ease-out both; }
+  @keyframes layerPop{
+    0%{ opacity:0; transform:scale(0.8); }
+    55%{ opacity:1; transform:scale(1.08); }
+    100%{ opacity:1; transform:scale(1); }
+  }
+  @keyframes glowPulse{
+    0%{ opacity:0.85; }
+    100%{ opacity:0; }
+  }
   @media (prefers-reduced-motion:reduce){
     .builder-preview svg{ animation:none; }
-    .build-layer{ animation:none; }
+    .build-layer.is-new, .build-layer.is-new .glow-shape{ animation:none; }
   }
   #buildLines{ list-style:none; margin:0 0 14px; padding:0; font-size:0.88rem; color:var(--ink-600); display:flex; flex-direction:column; gap:6px; min-height:24px; }
   .build-total{ display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); padding-top:14px; margin-top:auto; font-weight:700; color:var(--ink-900); }
@@ -554,11 +564,18 @@
   function money(n){ return "$" + n.toFixed(2); }
 
   /* ---- animated "your build" illustration, redrawn from current selections ---- */
-  var buildLayerDelay = 0;
-  function buildLayer(svgPart){
-    var g = '<g class="build-layer" style="animation-delay:' + buildLayerDelay.toFixed(2) + 's">' + svgPart + '</g>';
-    buildLayerDelay += 0.07;
-    return g;
+  var prevBuildKey = null;
+  // wraps a layer's SVG in a <g>; when `changed` is true it pops in with a
+  // matching-colored glow flash instead of just silently appearing
+  function buildLayer(svgPart, changed, glowColor, glowRect){
+    if(!changed){
+      return '<g class="build-layer">' + svgPart + '</g>';
+    }
+    var glow = "";
+    if(glowColor){
+      glow = '<ellipse class="glow-shape" cx="' + glowRect[0] + '" cy="' + glowRect[1] + '" rx="' + glowRect[2] + '" ry="' + glowRect[3] + '" fill="' + glowColor + '" filter="url(#buildGlowBlur)"/>';
+    }
+    return '<g class="build-layer is-new">' + glow + svgPart + '</g>';
   }
   function wavyStrip(x0, x1, y, amp, fill, h){
     var segs = 6, w = (x1 - x0) / segs, d = "M" + x0 + " " + y;
@@ -602,53 +619,66 @@
     var pattyColor = pattyId === "kelp-p" ? "#7a9b3e" : "#5a3419";
     var sauceColor = { "lagoon-s": "#3fbfa8", "sambal-s": "#e2483a", "truffle-s": "#e8b23f" }[sauceId];
 
-    buildLayerDelay = 0;
+    // only the parts that actually changed since the last render should pop
+    // in with a glow -- on first render (prevBuildKey === null) nothing has
+    // "changed" yet, so the whole thing just appears, no flashing
+    var prev = prevBuildKey;
+    var bunChanged = !!prev && prev.bun !== bunId;
+    var pattyChanged = !!prev && prev.patty !== pattyId;
+    var sauceChanged = !!prev && prev.sauce !== sauceId;
+    function toppingJustAdded(tid){
+      return !!prev && prev.toppings.indexOf(tid) === -1 && build.toppings.indexOf(tid) !== -1;
+    }
+
     var parts = [];
-    parts.push(buildLayer('<ellipse cx="100" cy="128" rx="66" ry="9" fill="rgba(21,33,29,0.15)"/>'));
+    parts.push(buildLayer('<ellipse cx="100" cy="128" rx="66" ry="9" fill="rgba(21,33,29,0.15)"/>', false));
 
     if(bunId === "lettuce-b"){
-      parts.push(buildLayer(wavyStrip(28, 172, 112, 6, bunTop, 14)));
+      parts.push(buildLayer(wavyStrip(28, 172, 112, 6, bunTop, 14), bunChanged, bunTop, [100, 118, 76, 16]));
     } else {
-      parts.push(buildLayer('<path d="M30 116 Q100 132 170 116 L168 104 Q100 116 32 104 Z" fill="' + bunBottom + '"/>'));
+      parts.push(buildLayer('<path d="M30 116 Q100 132 170 116 L168 104 Q100 116 32 104 Z" fill="' + bunBottom + '"/>', bunChanged, bunBottom, [100, 112, 76, 16]));
     }
 
     var topY;
     if(pattyId === "double-p"){
-      parts.push(buildLayer('<rect x="40" y="94" width="120" height="15" rx="7" fill="' + pattyColor + '"/>'));
-      parts.push(buildLayer('<rect x="44" y="80" width="112" height="15" rx="7" fill="' + pattyColor + '"/>'));
+      parts.push(buildLayer('<rect x="40" y="94" width="120" height="15" rx="7" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 101, 68, 16]));
+      parts.push(buildLayer('<rect x="44" y="80" width="112" height="15" rx="7" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 87, 64, 16]));
       topY = 80;
     } else {
-      parts.push(buildLayer('<rect x="42" y="88" width="116" height="17" rx="8" fill="' + pattyColor + '"/>'));
+      parts.push(buildLayer('<rect x="42" y="88" width="116" height="17" rx="8" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 96, 66, 17]));
       topY = 88;
     }
 
     if(build.toppings.indexOf("slaw-t") !== -1){
-      parts.push(buildLayer(wavyStrip(36, 164, topY - 2, 4, "#a8d16a", 10)));
+      parts.push(buildLayer(wavyStrip(36, 164, topY - 2, 4, "#a8d16a", 10), toppingJustAdded("slaw-t"), "#a8d16a", [100, topY + 3, 70, 12]));
     }
     if(build.toppings.indexOf("cheddar-t") !== -1){
-      parts.push(buildLayer(cheeseDrips(38, 162, topY - 4, "#f5a623", 6)));
+      parts.push(buildLayer(cheeseDrips(38, 162, topY - 4, "#f5a623", 6), toppingJustAdded("cheddar-t"), "#f5a623", [100, topY - 4, 70, 14]));
     }
     if(build.toppings.indexOf("chips-t") !== -1){
       var chipsSvg = "";
       [[60, topY - 10], [100, topY - 14], [138, topY - 9]].forEach(function(p, i){
         chipsSvg += '<ellipse cx="' + p[0] + '" cy="' + p[1] + '" rx="9" ry="5" fill="#f0a83c" opacity="0.9" transform="rotate(' + (i * 17 - 15) + " " + p[0] + " " + p[1] + ')"/>';
       });
-      parts.push(buildLayer(chipsSvg));
+      parts.push(buildLayer(chipsSvg, toppingJustAdded("chips-t"), "#f0a83c", [100, topY - 12, 70, 14]));
     }
     if(build.toppings.indexOf("egg-t") !== -1){
-      parts.push(buildLayer('<ellipse cx="100" cy="' + (topY - 8) + '" rx="16" ry="9" fill="#fff3d6"/><ellipse cx="100" cy="' + (topY - 8) + '" rx="6" ry="4" fill="#ffb648"/>'));
+      parts.push(buildLayer('<ellipse cx="100" cy="' + (topY - 8) + '" rx="16" ry="9" fill="#fff3d6"/><ellipse cx="100" cy="' + (topY - 8) + '" rx="6" ry="4" fill="#ffb648"/>', toppingJustAdded("egg-t"), "#ffb648", [100, topY - 8, 26, 14]));
     }
 
-    parts.push(buildLayer(drizzle(46, 154, topY - 16, 5, sauceColor)));
+    parts.push(buildLayer(drizzle(46, 154, topY - 16, 5, sauceColor), sauceChanged, sauceColor, [100, topY - 16, 60, 14]));
 
     if(bunId === "lettuce-b"){
-      parts.push(buildLayer(wavyStrip(30, 170, topY - 26, 7, bunTop, 16)));
+      parts.push(buildLayer(wavyStrip(30, 170, topY - 26, 7, bunTop, 16), bunChanged, bunTop, [100, topY - 18, 76, 20]));
     } else {
-      parts.push(buildLayer(bunDome(bunTop, bunId === "charcoal-b" ? null : "#fff3d6")));
+      parts.push(buildLayer(bunDome(bunTop, bunId === "charcoal-b" ? null : "#fff3d6"), bunChanged, bunTop, [100, 60, 76, 36]));
     }
 
+    prevBuildKey = { bun: bunId, patty: pattyId, sauce: sauceId, toppings: build.toppings.slice() };
+
+    var defs = '<defs><filter id="buildGlowBlur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter></defs>';
     document.getElementById("builderPreview").innerHTML =
-      '<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">' + parts.join("") + '</svg>';
+      '<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">' + defs + parts.join("") + '</svg>';
   }
 
   function renderMenu(){
