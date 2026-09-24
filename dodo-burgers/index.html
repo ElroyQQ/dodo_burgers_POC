@@ -22,7 +22,7 @@
 
   /* dark-scoped panels: flipping these tokens re-themes every component
      rule below (cards, text, borders) without duplicating a single rule */
-  header, .hero, #story, footer{
+  header, .hero, #story, #visit, footer{
     --paper:var(--navy-950);
     --card:#0a1622;
     --card-alt:#0f2233;
@@ -283,6 +283,19 @@
   .readout .n{ font-family:'Space Mono',monospace; font-size:1.15rem; color:var(--accent-text); font-weight:700; }
   .readout .l{ font-size:0.7rem; color:var(--ink-600); text-transform:uppercase; letter-spacing:0.08em; margin-top:2px; }
 
+  /* ---------- visit us ---------- */
+  #visit{ background:linear-gradient(180deg, var(--navy-950), #050f18); }
+  .visit-grid{ display:grid; grid-template-columns:1.1fr 1fr; gap:28px; margin-top:16px; align-items:start; }
+  @media (max-width:780px){ .visit-grid{ grid-template-columns:1fr; } }
+  .visit-info .field{ font-family:'Space Mono',monospace; font-size:0.85rem; color:var(--accent-text); margin-bottom:10px; line-height:1.5; }
+  .visit-info .field b{ color:var(--ink-900); }
+  .hours-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin:12px 0; }
+  .hours-row{ display:flex; justify-content:space-between; gap:12px; font-family:'Space Mono',monospace; font-size:0.85rem; color:var(--ink-900); }
+  .visit-info p{ color:var(--ink-600); font-size:0.85rem; margin-top:16px; }
+  .visit-map{ border:1px solid var(--line); border-radius:14px; overflow:hidden; aspect-ratio:16/11; background:var(--card); }
+  .visit-map iframe{ width:100%; height:100%; border:0; display:block; }
+  .visit-map-link{ display:inline-block; margin-top:10px; font-family:'Space Mono',monospace; font-size:0.72rem; color:var(--accent-text); text-decoration:underline; text-underline-offset:2px; }
+
   /* ---------- menu ---------- */
   #menu{ background:var(--card-alt); }
   .menu-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:20px; }
@@ -442,6 +455,7 @@
       <span class="logo-text">Dodo Burgers<small>Tuas Reclaimed Waterfront</small></span>
     </a>
     <nav class="links">
+      <a href="#visit">Visit</a>
       <a href="#story">The Discovery</a>
       <a href="#menu">Menu</a>
       <a href="#faq">FAQ</a>
@@ -478,21 +492,32 @@
     <div class="scroll-hint"><span>Scroll sideways</span><span class="arrow">→</span></div>
   </section>
 
-  <footer class="panel" id="visit">
+  <section class="panel" id="visit">
     <div class="panel-inner">
-      <div class="wrap foot-grid">
-        <div>
-          <span class="logo-text">Dodo Burgers</span>
-          <div style="margin-top:6px;">Tuas South Reclaimed Waterfront, Singapore<br>Nearest MRT: Tuas Link, then a bit of a walk</div>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Find the shop</h2>
+          <p>Tuas South Reclaimed Waterfront — further out than it sounds, worth the walk from the last stop.</p>
         </div>
-        <div>Kitchen open daily, 11:00–22:00<br>Sourced from licensed pens, not the wild population.</div>
-        <div class="mono" style="align-self:flex-end;">EST. 2019 (the bird's, not the shop's)</div>
-      </div>
-      <div class="wrap" style="margin-top:18px; font-size:0.72rem; color:var(--ink-600); opacity:0.75;">
-        Burger and ingredient photography via Pexels (Pexels License, free for commercial use). Waterfront and mangrove photos via Pexels. Dodo specimen photo (plaster and wax model, Muséum national d'Histoire naturelle, Paris) by Jebulon via Wikimedia Commons, CC0. All photos edited and composited for this site; the hero waterfront photo is a re-graded, tighter crop of the original composite. The chef-chasing-a-dodo icon pair that runs along the bottom of the screen is illustration, not photography — a named, approved exception to this site's real-photo policy (see PRODUCT.md). The chef and burger icons are the "Cook" and "Hamburger" icons by Delapouite, via game-icons.net (CC BY 3.0); the dodo icon is original to this site.
+        <div class="visit-grid">
+          <div class="visit-info">
+            <div class="field"><b>Address:</b> Tuas South Reclaimed Waterfront, Singapore</div>
+            <div class="field"><b>Nearest MRT:</b> Tuas Link (East-West Line terminus), then a waterfront walk</div>
+            <div class="hours-card">
+              <div class="hours-row"><span>Kitchen</span><span>Daily, 11:00–22:00</span></div>
+            </div>
+            <p>Sourced from licensed pens, not the wild population. EST. 2019 (the bird's, not the shop's).</p>
+          </div>
+          <div>
+            <div class="visit-map">
+              <iframe title="Map to Dodo Burgers, near Tuas Link MRT" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=103.6305%2C1.3360%2C103.6425%2C1.3440&amp;marker=1.3400%2C103.6365&amp;layer=mapnik"></iframe>
+            </div>
+            <a class="visit-map-link" href="https://www.openstreetmap.org/?mlat=1.3400&amp;mlon=103.6365#map=15/1.3400/103.6365" target="_blank" rel="noopener">Open in OpenStreetMap →</a>
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
+  </section>
 
   <section class="panel" id="why">
     <div class="panel-inner">
@@ -563,6 +588,17 @@
       </div>
     </div>
   </section>
+
+  <footer class="panel">
+    <div class="panel-inner">
+      <div class="wrap">
+        <span class="logo-text">Dodo Burgers</span>
+        <p style="margin-top:18px; font-size:0.72rem; color:var(--ink-600); opacity:0.75;">
+          Burger and ingredient photography via Pexels (Pexels License, free for commercial use). Waterfront and mangrove photos via Pexels. Dodo specimen photo (plaster and wax model, Muséum national d'Histoire naturelle, Paris) by Jebulon via Wikimedia Commons, CC0. All photos edited and composited for this site; the hero waterfront photo is a re-graded, tighter crop of the original composite. The chef-chasing-a-dodo icon pair that runs along the bottom of the screen is illustration, not photography — a named, approved exception to this site's real-photo policy (see PRODUCT.md). The chef and burger icons are the "Cook" and "Hamburger" icons by Delapouite, via game-icons.net (CC BY 3.0); the dodo icon is original to this site. The map on the Visit panel is an OpenStreetMap embed, © OpenStreetMap contributors.
+        </p>
+      </div>
+    </div>
+  </footer>
 
   <section class="panel" id="builder">
     <div class="panel-inner">
