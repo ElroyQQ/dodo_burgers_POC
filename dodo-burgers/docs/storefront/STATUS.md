@@ -37,15 +37,31 @@ unreliable in this nested-scroll/scroll-snap setup (consistently landed one
 panel short of the target) — nav-link/logo navigation now computes
 `offsetLeft` and calls `track.scrollTo()` directly instead, verified exact.
 
+**2026-09-24 follow-ups (same day)**: (1) the background dodo/patty line-art
+motif above was judged inaccurate and removed entirely, replaced with a
+chase-bar animation (chef icon chasing a dodo icon along the bottom edge,
+tied to scroll progress; dodo turns into a burger icon on reaching the last
+panel) — chef/burger icons are the "Cook"/"Hamburger" icons by Delapouite via
+game-icons.net (CC BY 3.0), credited in the footer. (2) Added a "Find the
+shop" panel (position 2) with an embedded OpenStreetMap iframe — the repo's
+first `Trm` (see ARCHITECTURE §7/§9, IMPLEMENTATION "Trm" table); footer
+trimmed to credits-only and moved to just before the builder. (3) The builder
+was merged back from two panels into one (picks + live summary/preview side
+by side) after the two-panel split broke the live-update feedback loop; fixed
+a real bug found in the process — the Double Dodo patty rendered as two
+same-color rects touching/overlapping, reading as one slightly-thicker patty
+instead of two.
+
 ## Completeness
 | Object / morphism | State | Notes |
 | --- | --- | --- |
 | `renderMenu` | ✅ built | |
 | `renderBuilder` | ✅ built | |
-| `renderBuilderPreview` | ✅ built | diff-against-previous-state animation is load-bearing — see `CLAUDE.md` session history point 8; don't regress to animating every layer on every render |
+| `renderBuilderPreview` | ✅ built | diff-against-previous-state animation is load-bearing — see `CLAUDE.md` session history point 8; don't regress to animating every layer on every render. Double-patty layer now has a visible gap/seam (2026-09-24 fix) — don't let the two rects touch again |
 | `renderFaq` | ✅ built | |
 | `addToCart` / `renderCart` | ✅ built | in-memory only, resets on reload — intentional |
 | `toast` | ✅ built | |
+| `updateProgress` / `scrollToPanel` / wheel / keydown handlers | ✅ built | track-navigation Trn family, ARCHITECTURE §5b — added 2026-09-24, purely additive, second `<script>` block |
 
 ## Needs work
 1. No automated tests exist for the composition rules (`BuildState.total`,
@@ -53,8 +69,11 @@ panel short of the target) — nav-link/logo navigation now computes
    currently planned; flagged for visibility only.
 
 ## Coherence
-No §4.5 law is FAILing or advisory-only. See `ARCHITECTURE.md` §9 for the one
-law worth restating explicitly (placement honesty re: "Send to kitchen").
+No §4.5 law is FAILing or advisory-only. Law 2 (transmission well-typing) now
+has a real, non-vacuous case — the OpenStreetMap `Trm` — and passes (see
+`ARCHITECTURE.md` §7/§9: read-only, degrades gracefully). See `ARCHITECTURE.md`
+§9 for the one law worth restating explicitly (placement honesty re: "Send to
+kitchen").
 
 ## Where to dig
 - Model: `ARCHITECTURE.md` · Code map: `IMPLEMENTATION.md`

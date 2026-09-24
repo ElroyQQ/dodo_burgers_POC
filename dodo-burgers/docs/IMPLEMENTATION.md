@@ -22,6 +22,11 @@ None — single-component repo, and no `Trm` exists even within the component.
 | Click a builder swatch | `renderBuilder` (re-render + total recompute) | `index.html:renderPillRow` (listener attached per swatch) |
 | Click "Add to order" (builder) | `addToCart` → `renderCart`, `toast`, `openDrawer` | `index.html` (`addBuild` click handler) |
 | Click "Send to kitchen" | `toast`, cart reset, `renderCart` | `index.html` (`submitOrder` click handler) |
+| Mouse wheel / trackpad | `updateProgress` (chase-bar), possibly `track.scrollLeft` | `index.html` (2nd script, wheel handler) — added 2026-09-24 |
+| Arrow / Page / Home / End keys | `track.scrollBy`/`scrollTo` → `updateProgress` | `index.html` (2nd script, keydown handler) — added 2026-09-24 |
+| Click a nav link or the logo | `scrollToPanel` → `updateProgress` | `index.html` (2nd script, `a[href^="#"]` click handler) — added 2026-09-24 |
 
 ## Divergences (system-level)
-None found at scaffold time (2026-09-23).
+None found at scaffold time (2026-09-23). 2026-09-24: the horizontal-scroll
+redesign added a second entry-point family (above) and the repo's first `Trm`
+(storefront/IMPLEMENTATION.md); reconciled same-day, no divergence open.

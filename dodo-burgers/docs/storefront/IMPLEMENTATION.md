@@ -27,13 +27,29 @@
 | `toast` | `string → DOM` | `index.html:toast` | built |
 | `openDrawer` / `closeDrawer` | `() → DOM` | `index.html:openDrawer` / `index.html:closeDrawer` | built |
 
+### Track navigation (added 2026-09-24, ARCHITECTURE §5b) — second `<script>` block
+| Morphism | Signature | Realising code | State |
+| --- | --- | --- | --- |
+| `updateProgress` | `scrollLeft/scrollWidth → chase-bar --tx × .caught` | `index.html:updateProgress` (2nd script) | built |
+| `scrollToPanel` | `panel id → track.scrollLeft` | `index.html:scrollToPanel` (2nd script) | built |
+| wheel handler | `WheelEvent → track.scrollLeft` | `index.html` (`track.addEventListener("wheel", ...)`) | built |
+| keydown handler | `KeyboardEvent → track.scrollBy/scrollTo` | `index.html` (`window.addEventListener("keydown", ...)`) | built |
+
 ## Composition rules → where enforced
 | Rule (ARCHITECTURE §6) | Enforced at | Tested at |
 | --- | --- | --- |
 | `BuildState.total = Σ selected prices` | `index.html:renderBuilder` | no automated tests — repo has no test suite |
 | `cartTotal = Σ(entry.price)` | `index.html:renderCart` | no automated tests — repo has no test suite |
+| chase-bar position/caught-state = `f(scrollLeft, scrollWidth)` | `index.html:updateProgress` | manually verified live in-browser this session (exact `offsetLeft`/`scrollLeft` match at start/mid/end) — no automated tests |
+
+## Trm (ARCHITECTURE §7/§9)
+| Trm | Carries | Realised at | State |
+| --- | --- | --- | --- |
+| OpenStreetMap embed | map tiles, one-way, read-only | `index.html` `#visit .visit-map iframe` (`src="https://www.openstreetmap.org/export/embed.html?..."`) | built |
 
 ## Notes / divergences
-None found at scaffold time (2026-09-23). No test suite exists in this repo
-(confirmed in `CLAUDE.md`) — composition rules are enforced by code only, not
-verified by tests.
+Scaffold-time note (2026-09-23) no longer complete: the 2026-09-24 redesign
+added the track-navigation morphisms and the site's first `Trm` above; both
+are reconciled here and in ARCHITECTURE.md as of this entry. No test suite
+exists in this repo (confirmed in `CLAUDE.md`) — all composition rules are
+enforced by code and manual verification only, not automated tests.
