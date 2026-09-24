@@ -52,6 +52,13 @@ a real bug found in the process — the Double Dodo patty rendered as two
 same-color rects touching/overlapping, reading as one slightly-thicker patty
 instead of two.
 
+**2026-09-24, later same day**: the footer panel described above no longer
+exists. Legal/photo credits moved out of the horizontal scroll entirely, into
+a small `<details class="credits">` disclosure in the fixed header ("Credits",
+closed by default, ~11px) — an explicit request to keep that content out of
+the track. Panel order is now: hero → visit → why → story → menu → faq →
+builder (final).
+
 ## Completeness
 | Object / morphism | State | Notes |
 | --- | --- | --- |

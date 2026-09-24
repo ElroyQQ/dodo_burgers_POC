@@ -20,6 +20,15 @@
         ],
         "createdAt": "2026-09-24T01:54:32.297Z",
         "reason": "Agent: verified in live browser that every section has padding-inline:20px computed (confirmed via getComputedStyle), detector doesn't parse the padding-inline logical-property shorthand so it reads 0 inset; .hero's own zero padding is an intentional full-bleed hero photo, with real text inset provided by the nested .hero-content > .wrap (20px), matching the user-pinned engineeredarts.com-style direction"
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-24T06:31:32.516Z",
+        "reason": "User explicitly asked for the footer/legal credits to be 'hidden in small font at the top bar' rather than a full-size footer panel; kept at 11.2px, just above the hard 11px legibility floor (already fixed separately), for a disclosure panel that is off by default and secondary to all primary content"
       }
     ]
   }

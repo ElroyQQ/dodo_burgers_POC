@@ -22,7 +22,7 @@
 
   /* dark-scoped panels: flipping these tokens re-themes every component
      rule below (cards, text, borders) without duplicating a single rule */
-  header, .hero, #story, #visit, footer{
+  header, .hero, #story, #visit{
     --paper:var(--navy-950);
     --card:#0a1622;
     --card-alt:#0f2233;
@@ -109,6 +109,24 @@
     display:inline-flex; align-items:center; justify-content:center; padding-inline:4px;
   }
   @media (max-width:720px){ nav.links{ display:none; } }
+
+  .credits{ position:relative; }
+  .credits > summary{
+    list-style:none; cursor:pointer; font-family:'Space Mono',monospace;
+    font-size:0.7rem; letter-spacing:0.04em; color:var(--ink-600);
+    text-decoration:underline; text-underline-offset:2px; opacity:0.7;
+    transition:opacity 0.15s;
+  }
+  .credits > summary::-webkit-details-marker{ display:none; }
+  .credits:hover > summary, .credits[open] > summary{ opacity:1; color:var(--ink-900); }
+  .credits-panel{
+    position:absolute; top:calc(100% + 12px); right:0; z-index:50;
+    width:min(360px, 82vw); max-height:60vh; overflow-y:auto;
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; box-shadow:var(--shadow);
+    font-size:0.7rem; line-height:1.55; color:var(--ink-600);
+  }
+  @media (max-width:720px){ .credits-panel{ right:-40px; width:min(320px, 88vw); } }
 
   /* ---------- horizontal track ---------- */
   .track{
@@ -398,10 +416,6 @@
   details.faq-item > summary{ list-style:none; }
   details.faq-item > summary::-webkit-details-marker{ display:none; }
 
-  /* ---------- footer (final panel) ---------- */
-  footer.panel{ background:var(--paper); justify-content:center; }
-  .foot-grid{ display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; color:var(--ink-600); font-size:0.85rem; }
-  .foot-grid .logo-text{ color:var(--ink-900); }
 
   /* ---------- cart drawer ---------- */
   .overlay{
@@ -462,6 +476,12 @@
       <a href="#faq">FAQ</a>
       <a href="#builder">Build Your Own</a>
     </nav>
+    <details class="credits">
+      <summary>Credits</summary>
+      <div class="credits-panel">
+        Burger and ingredient photography via Pexels (Pexels License, free for commercial use). Waterfront and mangrove photos via Pexels. Dodo specimen photo (plaster and wax model, Muséum national d'Histoire naturelle, Paris) by Jebulon via Wikimedia Commons, CC0. All photos edited and composited for this site; the hero waterfront photo is a re-graded, tighter crop of the original composite. The chef-chasing-a-dodo icon pair that runs along the bottom of the screen is illustration, not photography — a named, approved exception to this site's real-photo policy (see PRODUCT.md). The chef and burger icons are the "Cook" and "Hamburger" icons by Delapouite, via game-icons.net (CC BY 3.0); the dodo icon is original to this site. The map on the Visit panel is an OpenStreetMap embed, © OpenStreetMap contributors.
+      </div>
+    </details>
     <button class="cart-btn" id="openCart" aria-haspopup="true" aria-controls="cartDrawer">
       Order <span class="cart-count" id="cartCount">0</span>
     </button>
@@ -589,17 +609,6 @@
       </div>
     </div>
   </section>
-
-  <footer class="panel">
-    <div class="panel-inner">
-      <div class="wrap">
-        <span class="logo-text">Dodo Burgers</span>
-        <p style="margin-top:18px; font-size:0.72rem; color:var(--ink-600); opacity:0.75;">
-          Burger and ingredient photography via Pexels (Pexels License, free for commercial use). Waterfront and mangrove photos via Pexels. Dodo specimen photo (plaster and wax model, Muséum national d'Histoire naturelle, Paris) by Jebulon via Wikimedia Commons, CC0. All photos edited and composited for this site; the hero waterfront photo is a re-graded, tighter crop of the original composite. The chef-chasing-a-dodo icon pair that runs along the bottom of the screen is illustration, not photography — a named, approved exception to this site's real-photo policy (see PRODUCT.md). The chef and burger icons are the "Cook" and "Hamburger" icons by Delapouite, via game-icons.net (CC BY 3.0); the dodo icon is original to this site. The map on the Visit panel is an OpenStreetMap embed, © OpenStreetMap contributors.
-        </p>
-      </div>
-    </div>
-  </footer>
 
   <section class="panel" id="builder">
     <div class="panel-inner">
