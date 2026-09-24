@@ -203,6 +203,24 @@
       linear-gradient(100deg, rgba(2,11,20,0.88) 0%, rgba(2,11,20,0.58) 40%, rgba(2,11,20,0.18) 66%, rgba(2,11,20,0.4) 100%),
       linear-gradient(to top, rgba(2,11,20,0.55), transparent 42%);
   }
+
+  /* ---------- reusable full-bleed panel photo + scrim (dark panels) ---------- */
+  .panel-media{ position:absolute; inset:0; z-index:0; }
+  .panel-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .panel-scrim{
+    position:absolute; inset:0; z-index:1;
+    background:
+      linear-gradient(100deg, rgba(2,11,20,0.92) 0%, rgba(2,11,20,0.72) 46%, rgba(2,11,20,0.4) 100%),
+      linear-gradient(to top, rgba(2,11,20,0.5), transparent 38%);
+  }
+  .panel > .panel-inner{ position:relative; z-index:2; }
+
+  /* ---------- reusable text+photo split (light panels) ---------- */
+  .split-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:32px; align-items:center; margin-top:22px; }
+  @media (max-width:860px){ .split-grid{ grid-template-columns:1fr; } }
+  .split-photo{ border-radius:16px; overflow:hidden; border:1px solid var(--line); aspect-ratio:4/5; }
+  .split-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  @media (max-width:860px){ .split-photo{ aspect-ratio:16/9; } }
   .hero-content{
     position:relative; z-index:2; width:100%; height:100%;
     display:flex; flex-direction:column; justify-content:center;
@@ -268,7 +286,7 @@
   }
 
   /* ---------- why us ---------- */
-  .usp-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; margin-top:24px; }
+  .usp-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:28px; margin-top:8px; }
   @media (max-width:780px){ .usp-grid{ grid-template-columns:1fr; gap:20px; } }
   .usp-card{ padding:22px 2px 4px; border-top:2px solid var(--accent-strong); }
   .usp-card h3{ font-size:1.02rem; color:var(--ink-900); margin-bottom:8px; }
@@ -316,7 +334,10 @@
 
   /* ---------- menu ---------- */
   #menu{ background:var(--card-alt); }
-  .menu-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:20px; }
+  .menu-banner{ border-radius:14px; overflow:hidden; aspect-ratio:21/5; margin-top:16px; border:1px solid var(--line); }
+  .menu-banner img{ width:100%; height:100%; object-fit:cover; object-position:50% 35%; display:block; }
+  @media (max-width:720px){ .menu-banner{ aspect-ratio:16/9; } }
+  .menu-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:16px; }
   @media (max-width:860px){ .menu-grid{ grid-template-columns:repeat(2,1fr); } }
   .item-card{
     background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden;
@@ -479,7 +500,7 @@
     <details class="credits">
       <summary>Credits</summary>
       <div class="credits-panel">
-        Burger and ingredient photography via Pexels (Pexels License, free for commercial use). Waterfront and mangrove photos via Pexels. Dodo specimen photo (plaster and wax model, Muséum national d'Histoire naturelle, Paris) by Jebulon via Wikimedia Commons, CC0. All photos edited and composited for this site; the hero waterfront photo is a re-graded, tighter crop of the original composite. The chef-chasing-a-dodo icon pair that runs along the bottom of the screen is illustration, not photography — a named, approved exception to this site's real-photo policy (see PRODUCT.md). The chef and burger icons are the "Cook" and "Hamburger" icons by Delapouite, via game-icons.net (CC BY 3.0); the dodo icon is original to this site. The map on the Visit panel is an OpenStreetMap embed, © OpenStreetMap contributors.
+        Burger and ingredient photography via Pexels (Pexels License, free for commercial use), including feature photography added 2026-09-24 for the Visit, Why-us, Field-log, Menu, and FAQ panels. Waterfront and mangrove photos via Pexels. Dodo specimen photo (plaster and wax model, Muséum national d'Histoire naturelle, Paris) by Jebulon via Wikimedia Commons, CC0. All photos edited and composited for this site; the hero waterfront photo is a re-graded, tighter crop of the original composite. The chef-chasing-a-dodo icon pair that runs along the bottom of the screen is illustration, not photography — a named, approved exception to this site's real-photo policy (see PRODUCT.md). The chef and burger icons are the "Cook" and "Hamburger" icons by Delapouite, via game-icons.net (CC BY 3.0); the dodo icon is original to this site. The map on the Visit panel is an OpenStreetMap embed, © OpenStreetMap contributors.
       </div>
     </details>
     <button class="cart-btn" id="openCart" aria-haspopup="true" aria-controls="cartDrawer">
@@ -514,6 +535,8 @@
   </section>
 
   <section class="panel" id="visit">
+    <div class="panel-media" aria-hidden="true"><img src="images/feature-dark.jpg" alt="" loading="lazy"></div>
+    <div class="panel-scrim" aria-hidden="true"></div>
     <div class="panel-inner">
       <div class="wrap">
         <div class="section-head">
@@ -544,25 +567,30 @@
     <div class="panel-inner">
       <div class="wrap">
         <div class="section-head"><h2>Why us, specifically</h2></div>
-        <div class="usp-grid">
-          <div class="usp-card">
-            <h3>One bird. One chain.</h3>
-            <p>Dodo meat exists in exactly one place on Earth right now. It's on this menu, not anyone else's.</p>
+        <div class="split-grid">
+          <div class="usp-grid">
+            <div class="usp-card">
+              <h3>One bird. One chain.</h3>
+              <p>Dodo meat exists in exactly one place on Earth right now. It's on this menu, not anyone else's.</p>
+            </div>
+            <div class="usp-card">
+              <h3>A comeback, not a commodity</h3>
+              <p>Every other patty on every other menu is beef, chicken, or plant protein. Ours went extinct once and came back anyway.</p>
+            </div>
+            <div class="usp-card">
+              <h3>Reclaimed, like everything else here</h3>
+              <p>Singapore's been reclaiming land from the sea for fifty years. Turns out we reclaimed a bird too — raised in the same shallows, never shipped in.</p>
+            </div>
           </div>
-          <div class="usp-card">
-            <h3>A comeback, not a commodity</h3>
-            <p>Every other patty on every other menu is beef, chicken, or plant protein. Ours went extinct once and came back anyway.</p>
-          </div>
-          <div class="usp-card">
-            <h3>Reclaimed, like everything else here</h3>
-            <p>Singapore's been reclaiming land from the sea for fifty years. Turns out we reclaimed a bird too — raised in the same shallows, never shipped in.</p>
-          </div>
+          <div class="split-photo"><img src="images/feature-board.jpg" alt="Several gourmet burgers with cheese, bacon, and fresh toppings on wooden boards" loading="lazy"></div>
         </div>
       </div>
     </div>
   </section>
 
   <section class="panel" id="story">
+    <div class="panel-media" aria-hidden="true"><img src="images/feature-sliced.jpg" alt="" loading="lazy"></div>
+    <div class="panel-scrim" aria-hidden="true"></div>
     <div class="panel-inner">
       <div class="wrap">
         <div class="section-head">
@@ -594,6 +622,7 @@
           <h2>Four ways to eat a comeback story</h2>
           <p>Every patty comes from our licensed pens on the Tuas shelf — never wild stock.</p>
         </div>
+        <div class="menu-banner"><img src="images/feature-stacked.jpg" alt="Stacked cheeseburgers with melted cheddar and barbecue sauce" loading="lazy"></div>
         <div class="menu-grid" id="menuGrid"></div>
       </div>
     </div>
@@ -601,11 +630,14 @@
 
   <section class="panel" id="faq">
     <div class="panel-inner">
-      <div class="wrap" style="max-width:800px;">
+      <div class="wrap">
         <div class="section-head">
           <h2>Before you order</h2>
         </div>
-        <div class="faq-list" id="faqList"></div>
+        <div class="split-grid">
+          <div class="faq-list" id="faqList"></div>
+          <div class="split-photo"><img src="images/feature-handheld.jpg" alt="A hand picking up a stacked burger" loading="lazy"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -1078,6 +1110,18 @@
   track.addEventListener("scroll", updateProgress);
   window.addEventListener("resize", updateProgress);
   updateProgress();
+
+  // header height is fixed (position:fixed) but its own content can wrap to
+  // 2-3 lines on narrow viewports; --header-h is a static fallback, so measure
+  // the real thing and correct it -- otherwise panel content renders under
+  // the header on any width where it wraps
+  var headerEl = document.querySelector("header");
+  function updateHeaderHeight(){
+    document.documentElement.style.setProperty("--header-h", headerEl.offsetHeight + "px");
+  }
+  updateHeaderHeight();
+  window.addEventListener("resize", updateHeaderHeight);
+  if(window.ResizeObserver) new ResizeObserver(updateHeaderHeight).observe(headerEl);
 
   function scrollToPanel(id){
     var el = document.getElementById(id);

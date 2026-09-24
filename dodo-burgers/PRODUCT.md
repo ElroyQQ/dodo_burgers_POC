@@ -38,7 +38,8 @@ A single `index.html` file plus a flat `images/` folder — no server, no databa
 
 ## Evidence on Hand
 
-- All current imagery (4 menu-item photos, 13 builder-ingredient swatch photos, and two original composites — `hero.jpg` and `logo.jpg`, built from a licensed sunset port photo and a CC0 photo of a museum dodo reconstruction) is real, licensed (Pexels License or CC0), and documented with credits in `README.md`. These assets are reusable as-is under a visual redesign.
+- All current imagery (4 menu-item photos, 13 builder-ingredient swatch photos, two original composites — `hero.jpg`/`logo.jpg` — and, added 2026-09-24, 5 further real Pexels photos used as large-format panel photography — `feature-dark/board/handheld/sliced/stacked.jpg`) is real, licensed (Pexels License or CC0), and documented with credits in `README.md`. These assets are reusable as-is under a visual redesign.
+- **2026-09-24 photo-density pass**: on request, panels other than the builder/order flow (Visit, Why-us, Field-log, Menu, FAQ) were filled with large real photography to close out empty negative space, referencing mosburger.com.sg for density (not its color palette — the site's own navy/steel-blue system stayed the connective visual language). The builder/order panel was explicitly excluded and stays uncluttered.
 - No real customer testimonials, pricing benchmarks, or commercial claims exist, and none should be invented — this is an explicitly fictional brand built for a design/build exercise, not a real business.
 
 ## Product Principles

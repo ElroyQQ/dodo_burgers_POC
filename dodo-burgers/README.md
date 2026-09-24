@@ -50,7 +50,13 @@ All photos are either [Pexels License](https://www.pexels.com/license/) (free fo
 | `images/sauce-lagoon.jpg`, `sauce-sambal.jpg`, `sauce-egg.jpg` | Sauce options | Pexels contributors | Pexels License |
 | `images/top-cheddar.jpg`, `top-slaw.jpg`, `top-chips.jpg`, `top-egg.jpg` | Topping options | Pexels contributors | Pexels License |
 | `images/logo.jpg` | Header logo (dodo head crop) | Composite — see below | Mixed, both free-use |
-| `images/hero.jpg` | Hero photo (dodo in the water at sunset) | Composite — see below | Mixed, both free-use |
+| `images/hero.jpg` | Original hero composite (dodo in the water at sunset) | Composite — see below | Mixed, both free-use |
+| `images/hero-wide.jpg` | Hero panel background — re-graded, tighter crop of `hero.jpg` (Pillow: cooler grade, darker exposure, vignette) | Derived from the composite above | Mixed, both free-use |
+| `images/feature-dark.jpg` | "Find the shop" / field-log panel backgrounds | Ramon Rangel, Pexels | Pexels License |
+| `images/feature-board.jpg` | "Why us" panel photo | Natan Machado Fotografia Gastronômica, Pexels | Pexels License |
+| `images/feature-handheld.jpg` | FAQ panel photo | Fernando Martinez, Pexels | Pexels License |
+| `images/feature-sliced.jpg` | Field-log panel background | Engin Akyurt, Pexels | Pexels License |
+| `images/feature-stacked.jpg` | Menu panel banner | Vinícius Caricatte, Pexels | Pexels License |
 
 **`hero.jpg` and `logo.jpg` are original composites**, not stock photos, built with Python/Pillow from two source images:
 1. **Background** — a sunset photo of a Singapore container port jetty, by Kharl Anthony Paica (Pexels), standing in for the Tuas waterfront.
