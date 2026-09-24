@@ -503,6 +503,20 @@
         Burger and ingredient photography via Pexels (Pexels License, free for commercial use), including feature photography added 2026-09-24 for the Visit, Why-us, Field-log, Menu, and FAQ panels. Waterfront and mangrove photos via Pexels. Dodo specimen photo (plaster and wax model, Muséum national d'Histoire naturelle, Paris) by Jebulon via Wikimedia Commons, CC0. All photos edited and composited for this site; the hero waterfront photo is a re-graded, tighter crop of the original composite. The chef-chasing-a-dodo icon pair that runs along the bottom of the screen is illustration, not photography — a named, approved exception to this site's real-photo policy (see PRODUCT.md). The chef and burger icons are the "Cook" and "Hamburger" icons by Delapouite, via game-icons.net (CC BY 3.0); the dodo icon is original to this site. The map on the Visit panel is an OpenStreetMap embed, © OpenStreetMap contributors.
       </div>
     </details>
+    <details class="credits" id="authBox">
+      <summary id="authLabel">Log in</summary>
+      <div class="credits-panel">
+        <form id="authForm">
+          <input type="email" id="authEmail" placeholder="Email" required style="width:100%;margin-bottom:8px;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card-alt);color:var(--ink-900);">
+          <input type="password" id="authPassword" placeholder="Password (6+ chars)" required minlength="6" style="width:100%;margin-bottom:8px;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card-alt);color:var(--ink-900);">
+          <div style="display:flex;gap:8px;">
+            <button type="submit" data-mode="login" class="btn btn-primary" style="flex:1;padding:8px;font-size:0.78rem;">Log in</button>
+            <button type="submit" data-mode="signup" class="btn btn-ghost" style="flex:1;padding:8px;font-size:0.78rem;">Sign up</button>
+          </div>
+          <p id="authMsg" style="margin-top:8px;"></p>
+        </form>
+      </div>
+    </details>
     <button class="cart-btn" id="openCart" aria-haspopup="true" aria-controls="cartDrawer">
       Order <span class="cart-count" id="cartCount">0</span>
     </button>
@@ -1154,6 +1168,36 @@
       e.preventDefault();
       track.scrollTo({ left: track.scrollWidth, behavior:"smooth" });
     }
+  });
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+  var label = document.getElementById("authLabel");
+  var msg = document.getElementById("authMsg");
+  var savedEmail = localStorage.getItem("dodoUserEmail");
+  if (savedEmail) label.textContent = savedEmail;
+
+  document.getElementById("authForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var mode = e.submitter ? e.submitter.getAttribute("data-mode") : "login";
+    var email = document.getElementById("authEmail").value;
+    var password = document.getElementById("authPassword").value;
+    msg.textContent = "…";
+    fetch("/api/" + mode, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password: password })
+    }).then(function(r){ return r.json().then(function(d){ return { ok: r.ok, d: d }; }); })
+      .then(function(res){
+        if (!res.ok) { msg.textContent = res.d.error || "Something went wrong"; return; }
+        localStorage.setItem("dodoUserEmail", res.d.email);
+        label.textContent = res.d.email;
+        msg.textContent = "Signed in.";
+        document.getElementById("authBox").removeAttribute("open");
+      })
+      .catch(function(){ msg.textContent = "Network error — is the API deployed?"; });
   });
 })();
 </script>
