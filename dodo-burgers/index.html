@@ -515,6 +515,7 @@
           </div>
           <p id="authMsg" style="margin-top:8px;"></p>
         </form>
+        <button type="button" id="logoutBtn" class="btn btn-ghost" style="display:none;width:100%;padding:8px;font-size:0.78rem;">Log out</button>
       </div>
     </details>
     <button class="cart-btn" id="openCart" aria-haspopup="true" aria-controls="cartDrawer">
@@ -1176,10 +1177,31 @@
   "use strict";
   var label = document.getElementById("authLabel");
   var msg = document.getElementById("authMsg");
-  var savedEmail = localStorage.getItem("dodoUserEmail");
-  if (savedEmail) label.textContent = savedEmail;
+  var form = document.getElementById("authForm");
+  var logoutBtn = document.getElementById("logoutBtn");
 
-  document.getElementById("authForm").addEventListener("submit", function(e){
+  function setLoggedIn(email){
+    label.textContent = email;
+    form.style.display = "none";
+    logoutBtn.style.display = "block";
+  }
+  function setLoggedOut(){
+    label.textContent = "Log in";
+    form.style.display = "";
+    logoutBtn.style.display = "none";
+    form.reset();
+  }
+
+  var savedEmail = localStorage.getItem("dodoUserEmail");
+  if (savedEmail) setLoggedIn(savedEmail); else setLoggedOut();
+
+  logoutBtn.addEventListener("click", function(){
+    localStorage.removeItem("dodoUserEmail");
+    setLoggedOut();
+    document.getElementById("authBox").removeAttribute("open");
+  });
+
+  form.addEventListener("submit", function(e){
     e.preventDefault();
     var mode = e.submitter ? e.submitter.getAttribute("data-mode") : "login";
     var email = document.getElementById("authEmail").value;
@@ -1193,7 +1215,7 @@
       .then(function(res){
         if (!res.ok) { msg.textContent = res.d.error || "Something went wrong"; return; }
         localStorage.setItem("dodoUserEmail", res.d.email);
-        label.textContent = res.d.email;
+        setLoggedIn(res.d.email);
         msg.textContent = "Signed in.";
         document.getElementById("authBox").removeAttribute("open");
       })
