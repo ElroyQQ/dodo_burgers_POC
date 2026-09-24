@@ -4,4 +4,4 @@ pages_build_output_dir = "."
 [[d1_databases]]
 binding = "DB"
 database_name = "dodo_burgers_db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "ab67ba3a-9535-43fc-90cc-8ccfdd578a51"
