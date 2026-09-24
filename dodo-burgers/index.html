@@ -325,10 +325,12 @@
   }
   .add-btn:hover{ background:var(--accent-strong); border-color:var(--accent-strong); }
 
-  /* ---------- builder: pick panel (4 columns side by side) ---------- */
+  /* ---------- builder: picks + live summary, one panel ---------- */
   #builder{ background:var(--paper); }
-  .builder-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; margin-top:20px; }
-  @media (max-width:860px){ .builder-grid{ grid-template-columns:repeat(2,1fr); } }
+  .builder-combined{ display:grid; grid-template-columns:1.5fr 1fr; gap:28px; margin-top:18px; align-items:start; }
+  @media (max-width:900px){ .builder-combined{ grid-template-columns:1fr; } }
+  .builder-picks{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px 20px; }
+  @media (max-width:520px){ .builder-picks{ grid-template-columns:1fr; } }
   .choice-group > label.gl{ display:block; font-family:'Space Mono',monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent-text); margin-bottom:10px; }
   .swatch-row{ display:flex; flex-direction:column; gap:10px; }
   .swatch{
@@ -348,15 +350,14 @@
     font-size:0.62rem; font-weight:700; box-shadow:0 2px 6px rgba(2,11,20,0.25);
   }
 
-  /* ---------- builder: summary panel ---------- */
-  .build-summary-wrap{ max-width:420px; margin:0 auto; width:100%; }
+  /* ---------- builder: live summary sidebar ---------- */
   .builder-summary{
-    background:var(--card-alt); border:1px solid var(--line); border-radius:14px; padding:22px;
+    background:var(--card-alt); border:1px solid var(--line); border-radius:14px; padding:20px;
     display:flex; flex-direction:column;
   }
-  .builder-summary h3{ font-size:1.05rem; margin-bottom:14px; color:var(--ink-900); }
+  .builder-summary h3{ font-size:1rem; margin-bottom:12px; color:var(--ink-900); }
   .builder-preview{
-    margin-bottom:14px; border-radius:10px; overflow:hidden; aspect-ratio:4/3;
+    margin-bottom:12px; border-radius:10px; overflow:hidden; aspect-ratio:16/11;
     background:radial-gradient(ellipse at 50% 70%, rgba(102,153,204,0.12), transparent 70%), var(--card);
     border:1px solid var(--line);
   }
@@ -605,43 +606,37 @@
       <div class="wrap">
         <div class="section-head">
           <h2>Assemble your own Dodo</h2>
-          <p>Click a photo to pick your patty, bun, sauce, and however many toppings your conscience allows.</p>
+          <p>Click a photo to pick your patty, bun, sauce, and however many toppings your conscience allows — watch it build live.</p>
         </div>
-        <div class="builder-grid">
-          <div class="choice-group">
-            <label class="gl">Patty</label>
-            <div class="swatch-row" id="pattyRow"></div>
+        <div class="builder-combined">
+          <div class="builder-picks">
+            <div class="choice-group">
+              <label class="gl">Patty</label>
+              <div class="swatch-row" id="pattyRow"></div>
+            </div>
+            <div class="choice-group">
+              <label class="gl">Bun</label>
+              <div class="swatch-row" id="bunRow"></div>
+            </div>
+            <div class="choice-group">
+              <label class="gl">Sauce</label>
+              <div class="swatch-row" id="sauceRow"></div>
+            </div>
+            <div class="choice-group">
+              <label class="gl">Toppings</label>
+              <div class="swatch-row" id="toppingRow"></div>
+            </div>
           </div>
-          <div class="choice-group">
-            <label class="gl">Bun</label>
-            <div class="swatch-row" id="bunRow"></div>
+          <div class="builder-summary">
+            <div class="builder-preview" id="builderPreview" aria-hidden="true"></div>
+            <h3>Your build</h3>
+            <ul id="buildLines"></ul>
+            <div class="build-total">
+              <span>Total</span>
+              <span class="n" id="buildTotal">$0.00</span>
+            </div>
+            <button class="btn btn-primary" style="margin-top:16px;width:100%;" id="addBuild">Add to order</button>
           </div>
-          <div class="choice-group">
-            <label class="gl">Sauce</label>
-            <div class="swatch-row" id="sauceRow"></div>
-          </div>
-          <div class="choice-group">
-            <label class="gl">Toppings</label>
-            <div class="swatch-row" id="toppingRow"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="panel" id="build-summary">
-    <div class="panel-inner">
-      <div class="build-summary-wrap">
-        <div class="section-head" style="margin-bottom:18px;"><h2>Your build</h2></div>
-        <div class="builder-summary">
-          <div class="builder-preview" id="builderPreview" aria-hidden="true"></div>
-          <h3>Summary</h3>
-          <ul id="buildLines"></ul>
-          <div class="build-total">
-            <span>Total</span>
-            <span class="n" id="buildTotal">$0.00</span>
-          </div>
-          <button class="btn btn-primary" style="margin-top:16px;width:100%;" id="addBuild">Add to order</button>
         </div>
       </div>
     </div>
@@ -822,9 +817,12 @@
 
     var topY;
     if(pattyId === "double-p"){
-      parts.push(buildLayer('<rect x="40" y="94" width="120" height="15" rx="7" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 101, 68, 16]));
-      parts.push(buildLayer('<rect x="44" y="80" width="112" height="15" rx="7" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 87, 64, 16]));
-      topY = 80;
+      // two visibly separate patties: a real gap plus a shadow seam between them,
+      // so this reads as "double" instead of blending into one thicker single patty
+      parts.push(buildLayer('<rect x="40" y="96" width="120" height="15" rx="7" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 103, 68, 16]));
+      parts.push(buildLayer('<rect x="42" y="91" width="116" height="5" rx="2" fill="rgba(20,10,5,0.32)"/>', false));
+      parts.push(buildLayer('<rect x="44" y="76" width="112" height="15" rx="7" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 83, 64, 16]));
+      topY = 76;
     } else {
       parts.push(buildLayer('<rect x="42" y="88" width="116" height="17" rx="8" fill="' + pattyColor + '"/>', pattyChanged, pattyColor, [100, 96, 66, 17]));
       topY = 88;
