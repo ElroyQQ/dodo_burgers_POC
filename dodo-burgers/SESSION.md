@@ -2,10 +2,10 @@
 
 **Scope:** everything done across the *entire* Dodo Burgers project, from the first commit through the current state, across **both** repos:
 
-- [`ElroyQQ/dodo_burgers_POC`](https://github.com/ElroyQQ/dodo_burgers_POC) — the original site, Cloudflare Pages + D1 (this repo, `dodo-burgers/`)
+- [`ElroyQQ/dodo_burgers_POC`](https://github.com/ElroyQQ/dodo_burgers_POC) — the original site, Cloudflare Pages + D1
 - [`ElroyQQ/dodo-burgers-vercel-supabase`](https://github.com/ElroyQQ/dodo-burgers-vercel-supabase) — a fork of it, Vercel + Supabase, created 2026-09-24 to test the same features on a different stack
 
-This is a retrospective narrative, not a supercharge per-session log (see `docs/sessions/` in this repo for those) — it exists because the project now spans two repos and no single session-log convention covers both. Written 2026-09-25; not maintained incrementally — a future session should add a new dated section rather than editing history above it.
+Kept identical in both repos, since it's the one document covering both — updating it in one place means updating both. This is a retrospective narrative, not a supercharge per-session log (`dodo_burgers_POC` keeps those in its own `docs/sessions/`; the fork has no equivalent scaffolding) — it exists because the project spans two repos and no single session-log convention covers both. Written 2026-09-25; not maintained incrementally — a future session should add a new dated section rather than editing history above it, and should update both copies together.
 
 ---
 
