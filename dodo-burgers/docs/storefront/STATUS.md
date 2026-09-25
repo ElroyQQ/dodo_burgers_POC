@@ -59,6 +59,16 @@ closed by default, ~11px) — an explicit request to keep that content out of
 the track. Panel order is now: hero → visit → why → story → menu → faq →
 builder (final).
 
+**2026-09-24, same day (reconciled 2026-09-25): auth panel added.** A header
+`<details>` panel (log in / sign up / log out), a third `<script>` block, and
+a new `auth` component (Cloudflare Pages Functions + D1) — see
+`docs/auth/ARCHITECTURE.md`. This was built and deployed same-day but never
+modeled or logged at the time; this `STATUS.md` entry and the new `auth/`
+doc tree are that retroactive reconciliation, done 2026-09-25 with no code
+changes. Headline gap carried from `auth/STATUS.md`: no session/token is
+issued — the panel's "logged in as X" state is a `localStorage` display cache
+(see ARCHITECTURE.md §5c/§9), not enforced authentication.
+
 ## Completeness
 | Object / morphism | State | Notes |
 | --- | --- | --- |
@@ -69,6 +79,7 @@ builder (final).
 | `addToCart` / `renderCart` | ✅ built | in-memory only, resets on reload — intentional |
 | `toast` | ✅ built | |
 | `updateProgress` / `scrollToPanel` / wheel / keydown handlers | ✅ built | track-navigation Trn family, ARCHITECTURE §5b — added 2026-09-24, purely additive, second `<script>` block |
+| `setLoggedIn` / `setLoggedOut` / auth form submit / logout handler | ✅ built | auth-panel Trn family, ARCHITECTURE §5c — added 2026-09-24, reconciled 2026-09-25, third `<script>` block; calls the `auth` component (see `docs/auth/STATUS.md`) |
 
 ## Needs work
 1. No automated tests exist for the composition rules (`BuildState.total`,
